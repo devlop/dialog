@@ -1,7 +1,7 @@
 {
     "name": "@devlop-ab/devlop",
     "version": "1.0.0",
-    "description": "Drop-in replacement for the native dialog methods (alert, confirm, prompt).",
+    "description": "An (almost) drop-in replacement for the native dialog methods (alert, confirm, prompt).",
     "keywords": [
         "dialog",
         "alert",
@@ -40,6 +40,7 @@
         "@babel/preset-typescript": "^7.12.7",
         "@types/jest": "^26.0.20",
         "babel-jest": "^26.6.3",
-        "jest": "^26.6.3"
+        "jest": "^26.6.3",
+        "sass": "^1.37.5"
     }
 }
