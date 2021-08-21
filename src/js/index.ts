@@ -1,15 +1,23 @@
 'use strict';
 
 const template = `
-    <div data-dialog-backdrop>
-        <div data-dialog="{type}" tabindex="-1" role="dialog">
+    <div data-dialog-backdrop tabindex="-1">
+        <div
+            data-dialog="{type}"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="{titleId}"
+            aria-describedby="{descriptionId}"
+            aria-modal="true"
+            aria-live="assertive"
+        >
             <form>
                 <header>
-                    <span>{title}</span>
-                    <button type="button" data-role="close"></button>
+                    <span id="{titleId}">{title}</span>
+                    <button type="button" data-role="close" aria-label="Close"></button>
                 </header>
                 <section class="message">
-                    <span>{message}</span>
+                    <span id="{descriptionId}">{message}</span>
                 </section>
                 <section class="prompt" data-role="prompt-section">
                     <input type="text"
@@ -95,6 +103,13 @@ const makeDialog = (
     const cancelText : string = 'Cancel';
     const okText : string = 'Ok';
 
+    const uniqueId : string = String(Date.now());
+
+    const titleId : string = `dialog-${uniqueId}-title`;
+    const descriptionId : string = `dialog-${uniqueId}-description`;
+
+    dialogHTML = dialogHTML.replace(/\{titleId\}/g, titleId);
+    dialogHTML = dialogHTML.replace(/\{descriptionId\}/g, descriptionId);
     dialogHTML = dialogHTML.replace('{type}', type);
     dialogHTML = dialogHTML.replace('{message}', message);
     dialogHTML = dialogHTML.replace('{title}', title);
@@ -248,6 +263,8 @@ const registerEventListeners = (
 
     // close the dialog (cancel) when the backdrop is clicked
     backdrop?.addEventListener('click', (event : MouseEvent) : void => {
+        event.stopPropagation();
+
         if (event.target !== backdrop) {
             return;
         }
@@ -262,6 +279,13 @@ const registerEventListeners = (
         }
 
         cancelCallback.apply(null);
+    });
+
+    // close the dialog (cancel) if a mouse click is registered on outside the dialog.
+    window.setTimeout(() : void => {
+        registerDocumentEventListener('click', (event : MouseEvent) : void => {
+            cancelCallback.apply(null);
+        });
     });
 
     const form : HTMLFormElement = dialog.querySelector('form') !;
@@ -393,8 +417,32 @@ const registerTabTrap = (dialog : HTMLElement) : void => {
     });
 };
 
-const openDialog = (dialog : HTMLElement) : void => {
-    document.body.appendChild(dialog);
+const openDialog = (dialog : HTMLElement, callback : () => void) : void => {
+    // we need to have the timeout here for voice over to work properly.
+    // expand this comment with a better description of why later.
+    window.setTimeout(() : void => {
+        getDialogContainer().appendChild(dialog);
+
+        callback.apply(null);
+    }, 0);
+};
+
+let dialogContainer : HTMLElement | null = null;
+
+/**
+ * use a container so we don't force a repaint of the
+ * whole body everytime we add a new dialog.
+ */
+const getDialogContainer = () : HTMLElement => {
+    if (dialogContainer === null) {
+        dialogContainer = document.createElement('div');
+    }
+
+    if (dialogContainer.parentElement === null) {
+        document.body.appendChild(dialogContainer);
+    }
+
+    return dialogContainer;
 };
 
 const closeDialog = (dialog : HTMLElement) : void => {
@@ -422,9 +470,6 @@ const alertDialog = (
     return new Promise<void>((resolve, reject) : void => {
         const dialog = makeAlertDialog(message ?? '', options);
 
-        openDialog(dialog);
-        focusOkButton(dialog);
-
         registerEventListeners(
             dialog,
             // ok handler
@@ -439,7 +484,11 @@ const alertDialog = (
 
                 resolve();
             },
-        )
+        );
+
+        openDialog(dialog, () : void => {
+            focusOkButton(dialog);
+        });
     });
 };
 
@@ -449,9 +498,6 @@ const confirmDialog = (
 ) : Promise<boolean> => {
     return new Promise<boolean>((resolve, reject) : void => {
         const dialog = makeConfirmDialog(message ?? '', options);
-
-        openDialog(dialog);
-        focusOkButton(dialog);
 
         registerEventListeners(
             dialog,
@@ -467,7 +513,11 @@ const confirmDialog = (
 
                 resolve(false);
             },
-        )
+        );
+
+        openDialog(dialog, () : void => {
+            focusOkButton(dialog);
+        });
     });
 };
 
@@ -478,13 +528,6 @@ const promptDialog = (
 ) : Promise<string | null> => {
     return new Promise<string | null>((resolve, reject) : void => {
         const dialog = makePromptDialog(message ?? '', _default ?? '', options);
-
-        openDialog(dialog);
-
-        const inputField : HTMLInputElement = getInputField(dialog) !;
-
-        inputField.focus();
-        inputField.select();
 
         registerEventListeners(
             dialog,
@@ -502,7 +545,14 @@ const promptDialog = (
 
                 resolve(null);
             },
-        )
+        );
+
+        openDialog(dialog, () : void => {
+            const inputField : HTMLInputElement = getInputField(dialog) !;
+
+            inputField.focus();
+            inputField.select();
+        });
     });
 };
 
