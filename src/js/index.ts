@@ -3,22 +3,24 @@
 const template = `
     <div data-dialog-backdrop>
         <div data-dialog="{type}" tabindex="-1" role="dialog">
-            <header>
-                <span>{title}</span>
-                <button type="button" data-role="cancel"></button>
-            </header>
-            <section class="message">
-                <span>{message}</span>
-            </section>
-            <section class="prompt" data-role="prompt-section">
-                <input type="text"
-                    value=""
-                >
-            </section>
-            <footer>
-                <button data-role="cancel">{cancelText}</button>
-                <button data-role="ok">{okText}</button>
-            </footer>
+            <form>
+                <header>
+                    <span>{title}</span>
+                    <button type="button" data-role="close"></button>
+                </header>
+                <section class="message">
+                    <span>{message}</span>
+                </section>
+                <section class="prompt" data-role="prompt-section">
+                    <input type="text"
+                        value=""
+                    >
+                </section>
+                <footer>
+                    <button type="button" data-role="cancel">{cancelText}</button>
+                    <button type="submit" data-role="ok">{okText}</button>
+                </footer>
+            </form>
         </div>
     </div>
 `;
@@ -32,24 +34,24 @@ interface DialogOptionsInterface {
     title? : string;
 };
 
-interface AlertDialogOptionsInterface {
+interface AlertDialogOptionsInterface extends DialogOptionsInterface {
     okText? : string;
 }
 
-interface ConfirmDialogOptionsInterface {
+interface ConfirmDialogOptionsInterface extends DialogOptionsInterface {
     cancelText? : string;
     okText? : string;
 }
 
-interface PromptDialogOptionsInterface {
+interface PromptDialogOptionsInterface extends DialogOptionsInterface {
     cancelText? : string;
     okText? : string;
-    // input? : InputAttributesInterface;
+    input? : InputAttributesInterface;
 }
 
 interface InputAttributesInterface {
-    // type? : string;
-    // required? : boolean;
+    type? : string;
+    required? : boolean;
     // placeholder? : string;
     // min? : number;
     // step? : number;
@@ -84,7 +86,7 @@ const makeDialog = (
 
 const makeAlertDialog = (
     message : string,
-    options : DialogOptionsInterface,
+    options : AlertDialogOptionsInterface,
 ) : HTMLElement => {
     const dialog = makeDialog(
         'alert',
@@ -103,7 +105,7 @@ const makeAlertDialog = (
 
 const makeConfirmDialog = (
     message : string,
-    options : DialogOptionsInterface,
+    options : ConfirmDialogOptionsInterface,
 ) : HTMLElement => {
     const dialog = makeDialog(
         'confirm',
@@ -120,7 +122,7 @@ const makeConfirmDialog = (
 const makePromptDialog = (
     message : string,
     _default : string,
-    options : DialogOptionsInterface,
+    options : PromptDialogOptionsInterface,
 ) : HTMLElement => {
     const dialog = makeDialog(
         'prompt',
@@ -128,7 +130,18 @@ const makePromptDialog = (
         options,
     );
 
-    setInputFieldValue(dialog, _default);
+    const inputField : HTMLInputElement = getInputField(dialog) !;
+
+    // set the input default value
+    inputField.value = _default;
+
+    const inputAttributes : InputAttributesInterface | null = options.input ?? null;
+
+    if (inputAttributes !== null) {
+        // set any input attributes.
+        inputField.type = inputAttributes.type ?? inputField.type;
+        inputField.required = inputAttributes.required ?? false;
+    }
 
     return dialog;
 };
@@ -170,26 +183,45 @@ const registerEventListeners = (
         cancelCallback.apply(null);
     });
 
-    // close the dialog (cancel) when any cancel button is clicked
-    (dialog.querySelectorAll('[data-role="cancel"]') as NodeListOf<HTMLButtonElement>).forEach((cancelButton : HTMLButtonElement) : void => {
-        cancelButton.addEventListener('click', (event : MouseEvent) : void => {
-            cancelCallback.apply(null);
-        });
+    const form : HTMLFormElement = dialog.querySelector('form') !;
+
+    const closeButton : HTMLButtonElement = dialog.querySelector('[data-role="close"]') !;
+    const cancelButton : HTMLButtonElement = dialog.querySelector('[data-role="cancel"]') !;
+    const okButton : HTMLButtonElement = dialog.querySelector('[data-role="ok"]') !;
+    const inputField : HTMLInputElement | null = getInputField(dialog);
+
+    // close the dialog (cancel) when the "close" button is clicked.
+    closeButton.addEventListener('click', (event : MouseEvent) : void => {
+        cancelCallback.apply(null);
     });
 
-    // close the dialog (ok) when any ok button is clicked
-    (dialog.querySelector('[data-role="ok"]') as HTMLButtonElement).addEventListener('click', (event : MouseEvent) : void => {
+    // close the dialog (cancel) when the "cancel" button is clicked.
+    cancelButton?.addEventListener('click', (event : MouseEvent) : void => {
+        cancelCallback.apply(null);
+    });
+
+    // close the dialog (ok) when the form is submitted (the "ok" button will submit the form).
+    form.addEventListener('submit', (event : Event) : void => {
+        event.preventDefault();
+
         okCallback.apply(null);
     });
 
-    // close the dialog (ok) if enter is pressed while input field is focused
-    const inputField : HTMLInputElement | null = getInputField(dialog);
+    if (cancelButton !== null && okButton !== null) {
+        // if the left or right key is pressed, move focus to the other button.
+        [cancelButton, okButton].forEach((button : HTMLButtonElement) : void => {
+            button.addEventListener('keydown', (event : KeyboardEvent) : void => {
+                const isLeftOrRightKey = event.key === 'ArrowLeft' || event.key === 'ArrowRight';
 
-    if (inputField !== null) {
-        inputField.addEventListener('keydown', (event : KeyboardEvent) : void => {
-            if (event.key === 'Enter') {
-                okCallback.apply(null);
-            }
+                if (! isLeftOrRightKey) {
+                    return;
+                }
+
+                event.preventDefault();
+
+                // Switch focus to the other key.
+                (event.target === okButton ? cancelButton : okButton).focus();
+            });
         });
     }
 
@@ -298,32 +330,13 @@ const getInputField = (dialog : HTMLElement) : HTMLInputElement | null => {
     return dialog.querySelector('input') as HTMLInputElement | null;
 };
 
-const focusInputField = (dialog : HTMLElement) : void => {
-    const inputField : HTMLInputElement | null = getInputField(dialog);
-
-    if (inputField === null) {
-        return;
-    }
-
-    inputField.focus();
-    inputField.setSelectionRange(0, inputField.value.length);
-};
-
-const setInputFieldValue = (dialog : HTMLElement, value : string) : void => {
-    const inputField = getInputField(dialog);
-
-    if (inputField !== null) {
-        inputField.value = value;
-    }
-};
-
 const getInputFieldValue = (dialog : HTMLElement) : string => {
     return getInputField(dialog)?.value ?? '';
 };
 
 const alertDialog = (
     message? : string | undefined | null,
-    options : DialogOptionsInterface = {},
+    options : AlertDialogOptionsInterface = {},
 ) : Promise<void> => {
     return new Promise<void>((resolve, reject) : void => {
         const dialog = makeAlertDialog(message ?? '', options);
@@ -351,7 +364,7 @@ const alertDialog = (
 
 const confirmDialog = (
     message? : string | undefined | null,
-    options : DialogOptionsInterface = {},
+    options : ConfirmDialogOptionsInterface = {},
 ) : Promise<boolean> => {
     return new Promise<boolean>((resolve, reject) : void => {
         const dialog = makeConfirmDialog(message ?? '', options);
@@ -380,13 +393,17 @@ const confirmDialog = (
 const promptDialog = (
     message? : string | undefined,
     _default? : string | undefined | null,
-    options : DialogOptionsInterface = {},
+    options : PromptDialogOptionsInterface = {},
 ) : Promise<string | null> => {
     return new Promise<string | null>((resolve, reject) : void => {
         const dialog = makePromptDialog(message ?? '', _default ?? '', options);
 
         openDialog(dialog);
-        focusInputField(dialog);
+
+        const inputField : HTMLInputElement = getInputField(dialog) !;
+
+        inputField.focus();
+        inputField.select();
 
         registerEventListeners(
             dialog,

@@ -154,6 +154,11 @@
         width: 450px;
     }
 
+    > form {
+        margin: 0;
+        padding: 0;
+    }
+
     header {
         padding: var(--dialog-padding);
         border-bottom: var(--header-border-bottom);
@@ -181,6 +186,7 @@
             margin: 0;
             cursor: pointer;
             line-height: 1;
+            user-select: none;
 
             @include button-focus();
 
@@ -202,7 +208,7 @@
         padding: var(--dialog-padding);
         padding-top: 0;
 
-        > input {
+        input {
             width: 100%;
             margin: 0;
             padding: var(--input-padding);
@@ -237,6 +243,7 @@
             margin: 0;
             margin-left: $gap; // change to flex gap when we drop support for Safari < 14.1 (or introduce js feature detection)
             line-height: 1;
+            user-select: none;
 
             @include button-focus();
 
