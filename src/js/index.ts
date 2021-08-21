@@ -1,7 +1,7 @@
 'use strict';
 
 const template = `
-    <div data-dialog-backdrop tabindex="-1">
+    <div data-dialog-backdrop tabindex="-1" hidden>
         <div
             data-dialog="{type}"
             tabindex="-1"
@@ -418,12 +418,15 @@ const registerTabTrap = (dialog : HTMLElement) : void => {
 };
 
 const openDialog = (dialog : HTMLElement, callback : () => void) : void => {
+    getDialogContainer().appendChild(dialog);
+
     // we need to have the timeout here for voice over to work properly.
     // expand this comment with a better description of why later.
     window.setTimeout(() : void => {
-        getDialogContainer().appendChild(dialog);
+        dialog.hidden = false;
 
-        callback.apply(null);
+        // the main issue with a117 is when we set the focus on the button, that fucks up everything...
+        // callback.apply(null);
     }, 0);
 };
 
