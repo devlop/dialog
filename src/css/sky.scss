@@ -1,4 +1,5 @@
 @use "sass:color";
+@use "sass:math";
 
 /**
  * The button-focus mixin have support for the WICG focus-visible polyfill.
@@ -80,8 +81,10 @@
     --header-border-bottom: 1px solid #eae9e9;
     --header-font-family: Arial;
     --header-font-size: 24px;
+    --header-color: #222;
 
     --footer-border-top: 1px solid #eae9e9;
+    --footer-gap: 14px;
 
     $close-button-background-color: #f2f2f2;
     $close-button-hover-background-color: color.adjust($close-button-background-color, $lightness: -5%);
@@ -142,16 +145,19 @@
     box-sizing: border-box;
     outline: none; // to override the :-webkit-direct-focus in Safari
 
-    // mobile first, non mobile with defined in breakpoint below
+    // mobile first, non mobile width defined in breakpoint below
     width: 90%;
+
+    $dialog-width: 450px;
+    $mobile-breakpoint: math.div($dialog-width, 90) * 100;
 
     * {
         // make sure all descendants also uses border-box
         box-sizing: border-box;
     }
 
-    @media (min-width: 500px) {
-        width: 450px;
+    @media (min-width: $mobile-breakpoint) {
+        width: $dialog-width;
     }
 
     > form {
@@ -169,7 +175,7 @@
         align-items: center;
 
         > span {
-            color: #222;
+            color: var(--header-color);
         }
 
         > button {
@@ -223,16 +229,48 @@
         }
     }
 
-    footer {
-        $gap: 14px;
+    @media (max-width: $mobile-breakpoint - 1) {
+        // mobile vertical layout
+        footer {
+            display: grid;
+            grid-template-columns: 100%;
+            grid-template-rows: min-content;
+            grid-auto-rows: min-content;
+            grid-gap: var(--footer-gap);
 
+            button {
+                width: 100%;
+
+                &[data-role="cancel"] {
+                    order: 2;
+                }
+
+                &[data-role="ok"] {
+                    order: 1;
+                }
+            }
+        }
+    }
+
+    @media (min-width: $mobile-breakpoint) {
+        // non-mobile horizontal layout
+        footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+
+            button {
+                margin: 0;
+                margin-left: var(--footer-gap); // change to flex gap when we drop support for Safari < 14.1 (or introduce js feature detection)
+            }
+        }
+    }
+
+    footer {
         padding: var(--dialog-padding);
         border-top: var(--footer-border-top);
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
 
-        > button {
+        button {
             font-size: 16px;
             padding: 10px 26px;
             border-radius: 5px;
@@ -240,8 +278,6 @@
             font-family: var(--dialog-font-family);
             font-size: var(--dialog-font-size);
             cursor: pointer;
-            margin: 0;
-            margin-left: $gap; // change to flex gap when we drop support for Safari < 14.1 (or introduce js feature detection)
             line-height: 1;
             user-select: none;
 
