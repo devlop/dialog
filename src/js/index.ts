@@ -50,16 +50,39 @@ interface PromptDialogOptionsInterface extends DialogOptionsInterface {
 }
 
 interface InputAttributesInterface {
-    type? : string;
+    type? : SupportedInputType;
+    title? : string | null;
     required? : boolean;
-    // placeholder? : string;
-    // min? : number;
-    // step? : number;
-    // pattern? : string;
-    // and more...
+    placeholder? : string | null;
+    minLength? : number | null;
+    maxLength? : number | null;
+    min? : number | null;
+    max? : number | null;
+    step? : number | null;
+    multiple? : boolean;
+    list? : string | null;
+    pattern? : string | null;
+    inputMode? : string | null;
+    spellcheck? : boolean;
 }
 
 type TabbableElement = HTMLAnchorElement | HTMLButtonElement | HTMLInputElement;
+
+type SupportedInputType =
+    'color' |
+    'date' |
+    'datetime-local' |
+    'email' |
+    'month' |
+    'number' |
+    'password' |
+    'range' |
+    'search' |
+    'tel' |
+    'text' |
+    'time' |
+    'url' |
+    'week';
 
 const makeDialog = (
     type : string,
@@ -138,12 +161,70 @@ const makePromptDialog = (
     const inputAttributes : InputAttributesInterface | null = options.input ?? null;
 
     if (inputAttributes !== null) {
-        // set any input attributes.
-        inputField.type = inputAttributes.type ?? inputField.type;
-        inputField.required = inputAttributes.required ?? false;
+        updateInputFieldAttributes(inputField, inputAttributes);
     }
 
     return dialog;
+};
+
+const updateInputFieldAttributes = (inputField : HTMLInputElement, inputAttributes : InputAttributesInterface) : void => {
+    inputField.type = inputAttributes.type ?? inputField.type;
+
+    if ((inputAttributes.required ?? null) !== null) {
+        inputField.required = inputAttributes.required !;
+    }
+
+    if ((inputAttributes.placeholder ?? null) !== null) {
+        inputField.placeholder = inputAttributes.placeholder !;
+    }
+
+    if ((inputAttributes.multiple ?? null) !== null) {
+        inputField.multiple = inputAttributes.multiple !;
+    }
+
+    if ((inputAttributes.minLength ?? null) !== null) {
+        inputField.minLength = inputAttributes.minLength !;
+    }
+
+    if ((inputAttributes.maxLength ?? null) !== null) {
+        inputField.maxLength = inputAttributes.maxLength !;
+    }
+
+    if ((inputAttributes.min ?? null) !== null) {
+        inputField.min = String(inputAttributes.min);
+    }
+
+    if ((inputAttributes.max ?? null) !== null) {
+        inputField.max = String(inputAttributes.max);
+    }
+
+    if ((inputAttributes.max ?? null) !== null) {
+        inputField.max = String(inputAttributes.max);
+    }
+
+    if ((inputAttributes.step ?? null) !== null) {
+        inputField.step = String(inputAttributes.step);
+    }
+
+    if ((inputAttributes.pattern ?? null) !== null) {
+        inputField.pattern = inputAttributes.pattern !;
+    }
+
+    if ((inputAttributes.title ?? null) !== null) {
+        inputField.title = inputAttributes.title !;
+    }
+
+    if ((inputAttributes.list ?? null) !== null) {
+        inputField.setAttribute('list', inputAttributes.list !);
+    }
+
+    if ((inputAttributes.inputMode ?? null) !== null) {
+        inputField.inputMode = inputAttributes.inputMode !;
+    }
+
+    if ((inputAttributes.spellcheck ?? null) !== null) {
+        inputField.spellcheck = inputAttributes.spellcheck !;
+    }
 };
 
 const removeDialogInputSection = (dialog : HTMLElement) : void => {
