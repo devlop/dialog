@@ -7,10 +7,10 @@ const template = `
                 <span>{title}</span>
                 <button type="button" data-role="cancel"></button>
             </header>
-            <section>
+            <section class="message">
                 <span>{message}</span>
             </section>
-            <section data-role="prompt-section">
+            <section class="prompt" data-role="prompt-section">
                 <input type="text"
                     value=""
                 >
@@ -23,35 +23,52 @@ const template = `
     </div>
 `;
 
-// DialogOptionsInterface (abstract)
-//     title
-// AlertDialogOptionsInterface
-//     okText
-// ConfirmDialogOptionsInterface
-//     cancelText
-//     okText
-// PromptDialogOptionsInterface
-//     cancelText
-//     okText
-//     input : InputOptionsInterface
-// InputOptionsInterface
-//     type, required, placeholder, min, pattern and more...
-
 interface EventListenerReference {
     type : string;
     listener: EventListenerOrEventListenerObject;
 };
+
+interface DialogOptionsInterface {
+    title? : string;
+};
+
+interface AlertDialogOptionsInterface {
+    okText? : string;
+}
+
+interface ConfirmDialogOptionsInterface {
+    cancelText? : string;
+    okText? : string;
+}
+
+interface PromptDialogOptionsInterface {
+    cancelText? : string;
+    okText? : string;
+    // input? : InputAttributesInterface;
+}
+
+interface InputAttributesInterface {
+    // type? : string;
+    // required? : boolean;
+    // placeholder? : string;
+    // min? : number;
+    // step? : number;
+    // pattern? : string;
+    // and more...
+}
 
 type TabbableElement = HTMLAnchorElement | HTMLButtonElement | HTMLInputElement;
 
 const makeDialog = (
     type : string,
     message : string,
-    title : string,
-    cancelText : string,
-    okText : string,
+    options : DialogOptionsInterface,
 ) : HTMLElement => {
     let dialogHTML = template;
+
+    const title : string = options.title ?? '';
+    const cancelText : string = 'Cancel';
+    const okText : string = 'Ok';
 
     dialogHTML = dialogHTML.replace('{type}', type);
     dialogHTML = dialogHTML.replace('{message}', message);
@@ -67,13 +84,12 @@ const makeDialog = (
 
 const makeAlertDialog = (
     message : string,
+    options : DialogOptionsInterface,
 ) : HTMLElement => {
     const dialog = makeDialog(
         'alert',
         message,
-        '', // title
-        'Cancel', // not relevant here
-        'Ok',
+        options,
     );
 
     // remove the input section
@@ -87,13 +103,12 @@ const makeAlertDialog = (
 
 const makeConfirmDialog = (
     message : string,
+    options : DialogOptionsInterface,
 ) : HTMLElement => {
     const dialog = makeDialog(
         'confirm',
         message,
-        '', // title
-        'Cancel',
-        'Ok',
+        options,
     );
 
     // remove the input section
@@ -104,14 +119,16 @@ const makeConfirmDialog = (
 
 const makePromptDialog = (
     message : string,
+    _default : string,
+    options : DialogOptionsInterface,
 ) : HTMLElement => {
     const dialog = makeDialog(
         'prompt',
         message,
-        '', // title
-        'Cancel',
-        'Ok',
+        options,
     );
+
+    setInputFieldValue(dialog, _default);
 
     return dialog;
 };
@@ -282,7 +299,14 @@ const getInputField = (dialog : HTMLElement) : HTMLInputElement | null => {
 };
 
 const focusInputField = (dialog : HTMLElement) : void => {
-    getInputField(dialog)?.focus();
+    const inputField : HTMLInputElement | null = getInputField(dialog);
+
+    if (inputField === null) {
+        return;
+    }
+
+    inputField.focus();
+    inputField.setSelectionRange(0, inputField.value.length);
 };
 
 const setInputFieldValue = (dialog : HTMLElement, value : string) : void => {
@@ -297,12 +321,14 @@ const getInputFieldValue = (dialog : HTMLElement) : string => {
     return getInputField(dialog)?.value ?? '';
 };
 
-const alertDialog = (message? : string | undefined | null) : Promise<void> => {
+const alertDialog = (
+    message? : string | undefined | null,
+    options : DialogOptionsInterface = {},
+) : Promise<void> => {
     return new Promise<void>((resolve, reject) : void => {
-        const dialog = makeAlertDialog(message ?? '');
+        const dialog = makeAlertDialog(message ?? '', options);
 
         openDialog(dialog);
-
         focusOkButton(dialog);
 
         registerEventListeners(
@@ -323,12 +349,14 @@ const alertDialog = (message? : string | undefined | null) : Promise<void> => {
     });
 };
 
-const confirmDialog = (message? : string | undefined | null) : Promise<boolean> => {
+const confirmDialog = (
+    message? : string | undefined | null,
+    options : DialogOptionsInterface = {},
+) : Promise<boolean> => {
     return new Promise<boolean>((resolve, reject) : void => {
-        const dialog = makeConfirmDialog(message ?? '');
+        const dialog = makeConfirmDialog(message ?? '', options);
 
         openDialog(dialog);
-
         focusOkButton(dialog);
 
         registerEventListeners(
@@ -349,13 +377,15 @@ const confirmDialog = (message? : string | undefined | null) : Promise<boolean> 
     });
 };
 
-const promptDialog = (message? : string | undefined, _default? : string | undefined | null) : Promise<string | null> => {
+const promptDialog = (
+    message? : string | undefined,
+    _default? : string | undefined | null,
+    options : DialogOptionsInterface = {},
+) : Promise<string | null> => {
     return new Promise<string | null>((resolve, reject) : void => {
-        const dialog = makePromptDialog(message ?? '');
+        const dialog = makePromptDialog(message ?? '', _default ?? '', options);
 
         openDialog(dialog);
-
-        setInputFieldValue(dialog, _default ?? '');
         focusInputField(dialog);
 
         registerEventListeners(
@@ -387,7 +417,4 @@ const dialog = {
 export {
     dialog as default,
     dialog as dialog,
-    alertDialog as alert,
-    confirmDialog as confirm,
-    promptDialog as prompt,
 };

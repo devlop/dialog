@@ -1,0 +1,274 @@
+@use "sass:color";
+
+/**
+ * The button-focus mixin have support for the WICG focus-visible polyfill.
+ *
+ * We need to duplicate style selectors to get proper support.
+ * The basic idea is the same for both implementations:
+ *
+ *
+ *
+ * https://github.com/WICG/focus-visible
+ */
+@mixin button-focus() {
+    // Fallback for when neither focus-visible solution is available.
+    &:focus {
+        outline: none;
+
+        &:not(:active) {
+            // use the focus-glow instead (but not if :active).
+            box-shadow: var(--button-focus-glow);
+        }
+    }
+
+    // When the polyfill is not available.
+    &:not(.focus-visible) {
+        &:focus-visible {
+            // show the outline when focus-visible.
+            outline: var(--focus-visible-outline);
+            outline-offset: var(--focus-visible-outline-offset);
+
+            // hide the fallback glow.
+            box-shadow: none;
+        }
+
+        &:focus:not(:focus-visible):not(:active) {
+            // show the glow on "normal" focus.
+            box-shadow: var(--button-focus-glow);
+        }
+    }
+
+    // When the polyfill is available.
+    &.focus-visible {
+        &:focus {
+            // show the outline when focus-visible.
+            outline: var(--focus-visible-outline);
+            outline-offset: var(--focus-visible-outline-offset);
+
+            // hide the fallback glow.
+            box-shadow: none;
+        }
+
+        &:focus:not(:focus-visible):not(:active) {
+            // show the glow on "normal" focus.
+            box-shadow: var(--button-focus-glow);
+        }
+    }
+}
+
+[data-dialog-backdrop] {
+    --backdrop-background-color: rgba(0, 0, 0, 0.5);
+    --backdrop-z-index: 50;
+
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: var(--backdrop-z-index);
+    background-color: var(--backdrop-background-color);
+}
+
+[data-dialog] {
+    --dialog-border-radius: 4px;
+    --dialog-background-color: #fff;
+    --dialog-border-top: 5px solid #0EA5E9;
+    --dialog-padding: 16px;
+    --dialog-font-family: Arial;
+    --dialog-font-size: 16px;
+
+    --header-border-bottom: 1px solid #eae9e9;
+    --header-font-family: Arial;
+    --header-font-size: 24px;
+
+    --footer-border-top: 1px solid #eae9e9;
+
+    $close-button-background-color: #f2f2f2;
+    $close-button-hover-background-color: color.adjust($close-button-background-color, $lightness: -5%);
+    $close-button-active-background-color: color.adjust($close-button-background-color, $lightness: -10%);
+
+    --close-button-diameter: 35px;
+    --close-button-background-color: #{$close-button-background-color};
+    --close-button-hover-background-color: #{$close-button-hover-background-color};
+    --close-button-active-background-color: #{$close-button-active-background-color};
+
+    $cancel-button-background-color: #fff;
+    $cancel-button-hover-background-color: #F0F9FF;
+    $cancel-button-active-background-color: color.adjust($cancel-button-hover-background-color, $lightness: -1%);
+
+    --cancel-button-color: #0EA5E9;
+    --cancel-button-border: 2px solid #0EA5E9;
+    --cancel-button-background-color: #{$cancel-button-background-color};
+    --cancel-button-hover-background-color: #{$cancel-button-hover-background-color};
+    --cancel-button-active-background-color: #{$cancel-button-active-background-color};
+
+    $ok-button-background-color: #0EA5E9;
+    $ok-button-hover-background-color: color.adjust($ok-button-background-color, $lightness: -5%);
+    $ok-button-active-background-color: color.adjust($ok-button-background-color, $lightness: -7%);
+
+    --ok-button-color: #fff;
+    --ok-button-border: 2px solid #{$ok-button-background-color};
+    --ok-button-background-color: #{$ok-button-background-color};
+    --ok-button-hover-border: 2px solid #{$ok-button-hover-background-color};
+    --ok-button-hover-background-color: #{$ok-button-hover-background-color};
+    --ok-button-active-border: 2px solid #{$ok-button-active-background-color};
+    --ok-button-active-background-color: #{$ok-button-active-background-color};
+
+    --focus-visible-outline: 2px solid #0EA5E9;
+    --focus-visible-outline-offset: 4px;
+    --button-focus-glow: 0px 0px 1px 3px #7DD3FC;
+
+    --input-padding: 10px;
+    --input-font-size: 16px;
+    --input-border: 2px solid #E5E7EB;
+    --input-focus-border: 2px solid #0EA5E9;
+
+    position: absolute;
+    top: 50%;
+    right: auto;
+    bottom: auto;
+    left: 50%;
+
+    transform: translate(-50%, -75%);
+
+    z-index: calc( (var(--backdrop-z-index)) / 2 );
+    border-top: var(--dialog-border-top);
+    border-radius: var(--dialog-border-radius);
+    background-color: var(--dialog-background-color);
+    font-family: var(--dialog-font-family);
+    font-size: var(--dialog-font-size);
+    line-height: 1;
+    overflow: hidden;
+    box-sizing: border-box;
+    outline: none; // to override the :-webkit-direct-focus in Safari
+
+    // mobile first, non mobile with defined in breakpoint below
+    width: 90%;
+
+    * {
+        // make sure all descendants also uses border-box
+        box-sizing: border-box;
+    }
+
+    @media (min-width: 500px) {
+        width: 450px;
+    }
+
+    header {
+        padding: var(--dialog-padding);
+        border-bottom: var(--header-border-bottom);
+        font-family: var(--header-font-family);
+        font-size: var(--header-font-size);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        > span {
+            color: #222;
+        }
+
+        > button {
+            width: var(--close-button-diameter);
+            height: var(--close-button-diameter);
+            background-color: var(--close-button-background-color);
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMjAgNTEyIj48cGF0aCBmaWxsPSJjdXJyZW50Q29sb3IiIGQ9Ik0zMTAuNiAzNjEuNGMxMi41IDEyLjUgMTIuNSAzMi43NSAwIDQ1LjI1QzMwNC40IDQxMi45IDI5Ni4yIDQxNiAyODggNDE2cy0xNi4zOC0zLjEyNS0yMi42Mi05LjM3NUwxNjAgMzAxLjNMNTQuNjMgNDA2LjZDNDguMzggNDEyLjkgNDAuMTkgNDE2IDMyIDQxNlMxNS42MyA0MTIuOSA5LjM3NSA0MDYuNmMtMTIuNS0xMi41LTEyLjUtMzIuNzUgMC00NS4yNWwxMDUuNC0xMDUuNEw5LjM3NSAxNTAuNmMtMTIuNS0xMi41LTEyLjUtMzIuNzUgMC00NS4yNXMzMi43NS0xMi41IDQ1LjI1IDBMMTYwIDIxMC44bDEwNS40LTEwNS40YzEyLjUtMTIuNSAzMi43NS0xMi41IDQ1LjI1IDBzMTIuNSAzMi43NSAwIDQ1LjI1bC0xMDUuNCAxMDUuNEwzMTAuNiAzNjEuNHoiPjwvcGF0aD48L3N2Zz4=');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 10px;
+            border: none;
+            border-radius: 50%;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            line-height: 1;
+
+            @include button-focus();
+
+            &:hover {
+                background-color: var(--close-button-hover-background-color);
+            }
+
+            &:active {
+                background-color: var(--close-button-active-background-color);
+            }
+        }
+    }
+
+    section.message {
+        padding: var(--dialog-padding);
+    }
+
+    section.prompt {
+        padding: var(--dialog-padding);
+        padding-top: 0;
+
+        > input {
+            width: 100%;
+            margin: 0;
+            padding: var(--input-padding);
+            border: var(--input-border);
+            border-radius: 3px;
+            font-size: var(--input-font-size);
+
+            &:focus {
+                border: var(--input-focus-border);
+                outline: none;
+            }
+        }
+    }
+
+    footer {
+        $gap: 14px;
+
+        padding: var(--dialog-padding);
+        border-top: var(--footer-border-top);
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        > button {
+            font-size: 16px;
+            padding: 10px 26px;
+            border-radius: 5px;
+            min-width: 111px;
+            font-family: var(--dialog-font-family);
+            font-size: var(--dialog-font-size);
+            cursor: pointer;
+            margin: 0;
+            margin-left: $gap; // change to flex gap when we drop support for Safari < 14.1 (or introduce js feature detection)
+            line-height: 1;
+
+            @include button-focus();
+
+            &[data-role="cancel"] {
+                border: var(--cancel-button-border);
+                color: var(--cancel-button-color);
+                background-color: var(--cancel-button-background-color);
+
+                &:hover {
+                    background-color: var(--cancel-button-hover-background-color);
+                }
+
+                &:active {
+                    background-color: var(--cancel-button-active-background-color);
+                }
+            }
+
+            &[data-role="ok"] {
+                border: var(--ok-button-border);
+                color: var(--ok-button-color);
+                background-color: var(--ok-button-background-color);
+
+                &:hover {
+                    border: var(--ok-button-hover-border);
+                    background-color: var(--ok-button-hover-background-color);
+                }
+
+                &:active {
+                    border: var(--ok-button-active-border);
+                    background-color: var(--ok-button-active-background-color);
+                }
+            }
+        }
+    }
+}
