@@ -11,10 +11,9 @@ const template = `
             aria-modal="true"
             aria-live="assertive"
         >
-            <form>
-                <header>
+            <form role="presentation">
+                <header role="presentation">
                     <span id="{titleId}">{title}</span>
-                    <button type="button" data-role="close" aria-label="Close"></button>
                 </header>
                 <section class="message">
                     <span id="{descriptionId}">{message}</span>
@@ -24,7 +23,7 @@ const template = `
                         value=""
                     >
                 </section>
-                <footer>
+                <footer role="presentation">
                     <button type="button" data-role="cancel">{cancelText}</button>
                     <button type="submit" data-role="ok">{okText}</button>
                 </footer>
@@ -49,6 +48,7 @@ interface AlertDialogOptionsInterface extends DialogOptionsInterface {
 interface ConfirmDialogOptionsInterface extends DialogOptionsInterface {
     cancelText? : string;
     okText? : string;
+    focus? : 'ok' | 'cancel';
 }
 
 interface PromptDialogOptionsInterface extends DialogOptionsInterface {
@@ -99,7 +99,7 @@ const makeDialog = (
 ) : HTMLElement => {
     let dialogHTML = template;
 
-    const title : string = options.title ?? '';
+    const title : string | null = options.title ?? null;
     const cancelText : string = 'Cancel';
     const okText : string = 'Ok';
 
@@ -112,12 +112,24 @@ const makeDialog = (
     dialogHTML = dialogHTML.replace(/\{descriptionId\}/g, descriptionId);
     dialogHTML = dialogHTML.replace('{type}', type);
     dialogHTML = dialogHTML.replace('{message}', message);
-    dialogHTML = dialogHTML.replace('{title}', title);
+    dialogHTML = dialogHTML.replace('{title}', title ?? '');
     dialogHTML = dialogHTML.replace('{cancelText}', cancelText);
     dialogHTML = dialogHTML.replace('{okText}', okText);
 
     const div : HTMLElement = document.createElement('div');
+
     div.insertAdjacentHTML('afterbegin', dialogHTML);
+
+    if (title === null) {
+        // remove the <header>
+        (div.querySelector('header') !).remove();
+
+        // remove the aria-describedby
+        (div.querySelector('[aria-describedby]') !).removeAttribute('aria-describedby');
+
+        // replace aria-labelledby value with descriptionId
+        (div.querySelector('[aria-labelledby]') !).setAttribute('aria-labelledby', descriptionId);
+    }
 
     return div.firstElementChild as HTMLElement;
 };
@@ -290,15 +302,9 @@ const registerEventListeners = (
 
     const form : HTMLFormElement = dialog.querySelector('form') !;
 
-    const closeButton : HTMLButtonElement = dialog.querySelector('[data-role="close"]') !;
     const cancelButton : HTMLButtonElement = dialog.querySelector('[data-role="cancel"]') !;
     const okButton : HTMLButtonElement = dialog.querySelector('[data-role="ok"]') !;
     const inputField : HTMLInputElement | null = getInputField(dialog);
-
-    // close the dialog (cancel) when the "close" button is clicked.
-    closeButton.addEventListener('click', (event : MouseEvent) : void => {
-        cancelCallback.apply(null);
-    });
 
     // close the dialog (cancel) when the "cancel" button is clicked.
     cancelButton?.addEventListener('click', (event : MouseEvent) : void => {
@@ -420,14 +426,12 @@ const registerTabTrap = (dialog : HTMLElement) : void => {
 const openDialog = (dialog : HTMLElement, callback : () => void) : void => {
     getDialogContainer().appendChild(dialog);
 
-    // we need to have the timeout here for voice over to work properly.
-    // expand this comment with a better description of why later.
-    window.setTimeout(() : void => {
-        dialog.hidden = false;
+    dialog.hidden = false;
 
-        // the main issue with a117 is when we set the focus on the button, that fucks up everything...
-        // callback.apply(null);
-    }, 0);
+    // @ts-ignore
+    dialog.firstElementChild.style.display = 'block';
+
+    callback.apply(null);
 };
 
 let dialogContainer : HTMLElement | null = null;
@@ -456,6 +460,10 @@ const closeDialog = (dialog : HTMLElement) : void => {
 
 const focusOkButton = (dialog : HTMLElement) : void => {
     (dialog.querySelector('button[data-role="ok"]') as HTMLButtonElement).focus();
+};
+
+const focusCancelButton = (dialog : HTMLElement) : void => {
+    (dialog.querySelector('button[data-role="cancel"]') as HTMLButtonElement).focus();
 };
 
 const getInputField = (dialog : HTMLElement) : HTMLInputElement | null => {
@@ -519,7 +527,11 @@ const confirmDialog = (
         );
 
         openDialog(dialog, () : void => {
-            focusOkButton(dialog);
+            if (options.focus === 'cancel') {
+                focusCancelButton(dialog);
+            } else {
+                focusOkButton(dialog);
+            }
         });
     });
 };
