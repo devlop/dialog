@@ -23,6 +23,9 @@ npm install @devlop-ab/dialog
 All methods are compatible with the standard dialog methods and accept the same arguments, 
 plus an additional `options` argument to change basic dialog appearance and behaviour.
 
+All methods returns a promise, so by using await we can mimic the built in behaviour of 
+halting execution of the current function while waiting for the dialog response.
+
 ```javascript
 import { dialog } from '@devlop-ab/dialog';
 
@@ -32,7 +35,7 @@ await dialog.alert('Hello world!');
 // confirm (returns true or false)
 const result = await dialog.confirm('Do you really want to leave?');
 
-// prompt (returns string or null)
+// prompt (returns string or null if cancelled)
 const result = await dialog.prompt('Are you feeling lucky?', 'sure');
 ```
 
