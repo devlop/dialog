@@ -3,13 +3,13 @@
     "version": "1.0.1",
     "description": "Lightweight and accessible drop-in replacement for the built-in browser dialog methods (alert, confirm and prompt).",
     "keywords": [
-        "accessibility"
+        "accessibility",
         "dialog",
         "alert",
         "confirm",
         "prompt",
         "typescript",
-        "no-dependencies",
+        "no-dependencies"
     ],
     "author": "Johan Rosenson",
     "license": "MIT",
