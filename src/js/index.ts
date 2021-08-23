@@ -38,6 +38,7 @@ interface EventListenerReference {
 };
 
 interface DialogOptionsInterface {
+    container? : HTMLElement;
     title? : string;
 };
 
@@ -304,8 +305,8 @@ const registerEventListeners = (
 
     const form : HTMLFormElement = dialog.querySelector('form') !;
 
-    const cancelButton : HTMLButtonElement = dialog.querySelector('[data-role="cancel"]') !;
-    const okButton : HTMLButtonElement = dialog.querySelector('[data-role="ok"]') !;
+    const cancelButton : HTMLButtonElement = (dialog.querySelector('[data-role="cancel"]') as HTMLButtonElement | null) !;
+    const okButton : HTMLButtonElement = (dialog.querySelector('[data-role="ok"]') as HTMLButtonElement | null) !;
     const inputField : HTMLInputElement | null = getInputField(dialog);
 
     // close the dialog (cancel) when the "cancel" button is clicked.
@@ -425,8 +426,8 @@ const registerTabTrap = (dialog : HTMLElement) : void => {
     });
 };
 
-const openDialog = (dialog : HTMLElement, callback : () => void) : void => {
-    getDialogContainer().appendChild(dialog);
+const openDialog = (dialog : HTMLElement, options : DialogOptionsInterface, callback : () => void) : void => {
+    (options.container ?? getDialogContainer()).appendChild(dialog);
 
     dialog.hidden = false;
 
@@ -499,7 +500,7 @@ const alertDialog = (
             },
         );
 
-        openDialog(dialog, () : void => {
+        openDialog(dialog, options, () : void => {
             focusOkButton(dialog);
         });
     });
@@ -528,7 +529,7 @@ const confirmDialog = (
             },
         );
 
-        openDialog(dialog, () : void => {
+        openDialog(dialog, options, () : void => {
             if (options.focus === 'cancel') {
                 focusCancelButton(dialog);
             } else {
@@ -564,7 +565,7 @@ const promptDialog = (
             },
         );
 
-        openDialog(dialog, () : void => {
+        openDialog(dialog, options, () : void => {
             const inputField : HTMLInputElement = getInputField(dialog) !;
 
             inputField.focus();
