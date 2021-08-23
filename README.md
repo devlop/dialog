@@ -4,7 +4,7 @@
 </p>
 
 <div style="text-align: center;">
-    <img src="/assets/example.png" alt="Example of a confirm dialog">
+    <img src="/assets/example.png" alt="Example of a confirm dialog" width="450">
 </div>
 
 # dialog
