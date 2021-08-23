@@ -1,12 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 <head>
     <meta charset="utf-8">
     <title>dialog by devlop</title>
-    <link rel="stylesheet" type="text/css" href="/dialog/assets/style.css">
-    <script type="text/javascript" src="/dialog/assets/script.js" async defer></script>
+    <meta name="description" content="Drop-in replacement for the native dialog methods (alert, confirm, prompt)." />
+    <meta property="og:description" content="Drop-in replacement for the native dialog methods (alert, confirm, prompt)." />
+    <link rel="canonical" href="https://devlop.github.io/dialog/" />
+    <meta property="og:url" content="https://devlop.github.io/dialog/" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.2.0/styles/default.min.css">
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.2.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <link rel="stylesheet" type="text/css" href="./assets/docs.css">
+    <script type="text/javascript" src="./assets/docs.js" async defer></script>
 </head>
 <body>
-    dialog
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+        <h1 class="project-name">dialog</h1>
+        <h2 class="project-tagline">Drop-in replacement for the native dialog methods (alert, confirm, prompt).</h2>
+
+        <a href="https://github.com/devlop/dialog" class="btn">
+            <img src="./assets/images/GitHub-Mark-64px.png">
+            <span>View on GitHub</span>
+        </a>
+    </header>
+
+    <main id="content" class="main-content" role="main">
+        <h2>Examples</h2>
+
+        <h3>alert with title</h3>
+
+        <pre><code class="language-javascript">// alert with title
+await dialog.alert('Your changes have been saved.', {
+    title: 'Saved',
+});
+</code></pre>
+
+        <button type="button" id="alert-with-title">show example</button>
+
+        <h3>alert with custom button text</h3>
+
+        <pre><code class="language-javascript">// alert with title
+await dialog.alert('Your changes have been saved.', {
+    title: 'Saved',
+    okText: 'Alright!',
+});
+</code></pre>
+
+        <button type="button" id="alert-with-custom-button-text">show example</button>
+
+        <h3>confirm</h3>
+
+        <code>example</code>
+
+        <h3>prompt</h3>
+
+        <code>example</code>
+    </main>
+
+    <script> // stop the flickering buttons on page load </script>
 </body>
 </html>

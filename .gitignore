@@ -4,3 +4,4 @@
 /package
 tsconfig.tsbuildinfo
 package-lock.json
+/docs/assets/*.map
