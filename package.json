@@ -1,13 +1,15 @@
 {
-    "name": "@devlop-ab/devlop",
-    "version": "1.0.0",
-    "description": "An (almost) drop-in replacement for the native dialog methods (alert, confirm, prompt).",
+    "name": "@devlop-ab/dialog",
+    "version": "1.0.1",
+    "description": "Lightweight and accessible drop-in replacement for the built-in browser dialog methods (alert, confirm and prompt).",
     "keywords": [
+        "accessibility"
         "dialog",
         "alert",
         "confirm",
         "prompt",
-        "typescript"
+        "typescript",
+        "no-dependencies",
     ],
     "author": "Johan Rosenson",
     "license": "MIT",

@@ -5,7 +5,7 @@
 
 # dialog
 
-Modern drop-in replacement for native dialog methods 
+Lightweight and accessible drop-in replacement for the built-in browser dialog methods 
 [alert](https://developer.mozilla.org/en-US/docs/Web/API/Window/alert), 
 [confirm](https://developer.mozilla.org/en-US/docs/Web/API/Window/confirm) and 
 [prompt](https://developer.mozilla.org/en-US/docs/Web/API/Window/prompt).
@@ -66,7 +66,7 @@ The javascript does not output any styles, you must include them in your css/sas
 
 **Using SASS** 
 
-```sass
+```scss
 // importing using sass
 @import '@devlop-ab/dialog/dist/css/sky.css';
 ```
@@ -79,7 +79,7 @@ Copy the css file you want to use from the `node_modules/@devlop-ab/dialog/dist/
 
 Each theme exposes a plethora of css variables allowing you to change colors, fonts and padding without overriding any css.
 
-```sass
+```scss
 // importing using sass
 @import '@devlop-ab/dialog/dist/css/sky.css';
 
