@@ -47,6 +47,8 @@ const result = await dialog.prompt('Are you feeling lucky?', 'sure');
 
 All dialog methods accept an (optional) options argument where you can do basic configuration changes.
 
+See [https://devlop.github.io/dialog for more examples](https://devlop.github.io/dialog).
+
 ```javascript
 // all options are optional
 {
