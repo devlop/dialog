@@ -7,6 +7,10 @@
     <img src="/assets/example.png" alt="Example of a confirm dialog" width="450">
 </p>
 
+<p align="center">
+    <a href="https://devlop.github.io/dialog">See examples</a>
+</p>
+
 # dialog
 
 Lightweight and accessible drop-in replacement for the built-in browser dialog methods 
