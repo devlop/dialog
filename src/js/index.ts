@@ -100,8 +100,10 @@ const makeDialog = (
     let dialogHTML = template;
 
     const title : string | null = options.title ?? null;
-    const cancelText : string = 'Cancel';
-    const okText : string = 'Ok';
+    // @ts-ignore
+    const cancelText : string = options.cancelText ?? 'Cancel';
+    // @ts-ignore
+    const okText : string = options.okText ?? 'Ok';
 
     const uniqueId : string = String(Date.now());
 
