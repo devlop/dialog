@@ -1031,6 +1031,11 @@ a:hover {
   color: #819198;
 }
 
+@media screen and (min-width: 64em) {
+  header.page-header {
+    padding: 50px;
+  }
+}
 header .btn {
   display: inline-flex;
   align-items: center;
@@ -1045,8 +1050,21 @@ header .btn:focus-visible {
   outline-offset: 4px;
 }
 
+#content {
+  margin-bottom: 100px;
+}
 #content h1, #content h2, #content h3 {
   color: #159957;
+}
+#content h2 {
+  border-bottom: 2px solid currentColor;
+}
+#content h3::before {
+  content: "#";
+  margin-right: 5px;
+}
+#content > section {
+  margin-bottom: 40px;
 }
 #content button {
   padding: 10px 15px;
@@ -1073,4 +1091,12 @@ header .btn:focus-visible {
 #content button:focus-visible {
   outline: 2px solid #159957;
   outline-offset: 4px;
+}
+#content button + code {
+  border: 2px solid #e2e5e8;
+  margin-left: 20px;
+  padding: 10px 15px;
+}
+#content button + code:empty {
+  display: none;
 }

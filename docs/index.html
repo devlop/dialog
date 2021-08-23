@@ -33,34 +33,210 @@
     <main id="content" class="main-content" role="main">
         <h2>Examples</h2>
 
-        <h3>alert with title</h3>
+        <!-- alert examples -->
 
-        <pre><code class="language-javascript">// alert with title
+        <section>
+            <h3>alert with title</h3>
+
+            <pre><code class="language-javascript">import { dialog } from '@devlop-ab/dialog';
+
 await dialog.alert('Your changes have been saved.', {
     title: 'Saved',
-});
-</code></pre>
+});</code></pre>
 
-        <button type="button" id="alert-with-title">show example</button>
+            <button type="button" id="alert-with-title">show example</button>
+        </section>
 
-        <h3>alert with custom button text</h3>
+        <section>
+            <h3>alert with custom button text</h3>
 
-        <pre><code class="language-javascript">// alert with title
+            <pre><code class="language-javascript">import { dialog } from '@devlop-ab/dialog';
+
 await dialog.alert('Your changes have been saved.', {
     title: 'Saved',
     okText: 'Alright!',
-});
-</code></pre>
+});</code></pre>
 
-        <button type="button" id="alert-with-custom-button-text">show example</button>
+            <button type="button" id="alert-with-custom-button-text">show example</button>
+        </section>
 
-        <h3>confirm</h3>
+        <!-- confirm examples -->
 
-        <code>example</code>
+        <section>
+            <h3>confirm with custom buttons</h3>
 
-        <h3>prompt</h3>
+            <pre><code class="language-javascript">import { dialog } from '@devlop-ab/dialog';
 
-        <code>example</code>
+const result = await dialog.confirm(`Delete the file "passwords.txt"?`, {
+    title: 'Delete',
+    okText: 'Yes',
+    cancelText: 'No',
+});</code></pre>
+
+            <button type="button" id="confirm-with-custom-buttons">show example</button>
+            <code></code>
+        </section>
+
+        <section>
+            <h3>confirm with prefocused cancel button</h3>
+
+            <pre><code class="language-javascript">import { dialog } from '@devlop-ab/dialog';
+
+const result = await dialog.confirm(`Delete the file "passwords.txt"?`, {
+    title: 'Delete',
+    okText: 'Yes',
+    cancelText: 'No',
+    focus: 'cancel',
+});</code></pre>
+
+            <button type="button" id="confirm-with-prefocused-cancel-button">show example</button>
+            <code></code>
+        </section>
+
+        <!-- prompt examples -->
+
+        <section>
+            <h3>prompt with default value</h3>
+
+            <pre><code class="language-javascript">import { dialog } from '@devlop-ab/dialog';
+
+const result = await dialog.prompt('Glory?', 'Hammer!');</code></pre>
+
+            <button type="button" id="prompt-with-default-value">show example</button>
+            <code></code>
+        </section>
+
+        <section>
+            <h3>prompt with input placeholder</h3>
+
+            <p>
+                It's possible to customize the input field by using the <code>input</code><br>
+                option to pass along attributes to the <code>&lt;input&gt;</code> element.
+            </p>
+
+            <pre><code class="language-javascript">import { dialog } from '@devlop-ab/dialog';
+
+const result = await dialog.prompt('Enter your name', '', {
+    title: 'Your name',
+    input: {
+        placeholder: 'Your full name please',
+    },
+});</code></pre>
+
+            <button type="button" id="prompt-with-placeholder">show example</button>
+            <code></code>
+        </section>
+
+        <section>
+            <h3>prompt with required input</h3>
+
+            <p>
+                Using the input options it's possible to require a value in the input,<br>
+                it does not however stop the user from cancelling the whole dialog,<br>
+                but it does stop the user from submitting the dialog without a value.
+            </p>
+
+            <pre><code class="language-javascript">import { dialog } from '@devlop-ab/dialog';
+
+const result = await dialog.prompt('Enter your name', '', {
+    title: 'Your name',
+    input: {
+        required: true,
+    },
+});</code></pre>
+
+            <button type="button" id="prompt-with-required-input">show example</button>
+            <code></code>
+        </section>
+
+        <section>
+            <h3>prompt with custom buttons</h3>
+
+            <pre><code class="language-javascript">import { dialog } from '@devlop-ab/dialog';
+
+const result = await dialog.prompt('Please give us your name', '', {
+    title: 'Your name',
+    okText: 'Sure',
+    cancelText: 'No, it\'s a secret',
+});</code></pre>
+
+            <button type="button" id="prompt-with-custom-buttons">show example</button>
+            <code></code>
+        </section>
+
+        <section>
+            <h3>prompt with email input</h3>
+
+            <pre><code class="language-javascript">import { dialog } from '@devlop-ab/dialog';
+
+const result = await dialog.prompt('Enter your email', '', {
+    title: 'Your Email',
+    input: {
+        type: 'email',
+        required: true,
+    },
+});</code></pre>
+
+            <button type="button" id="prompt-with-email-input">show example</button>
+            <code></code>
+        </section>
+
+        <section>
+            <h3>prompt with date input</h3>
+
+            <pre><code class="language-javascript">import { dialog } from '@devlop-ab/dialog';
+
+const result = await dialog.prompt('Enter your birthday', '', {
+    title: 'Your Birthday',
+    input: {
+        type: 'date',
+    },
+});</code></pre>
+
+            <button type="button" id="prompt-with-date-input">show example</button>
+            <code></code>
+        </section>
+
+        <section>
+            <h3>prompt with number input (using min and max values)</h3>
+
+            <pre><code class="language-javascript">import { dialog } from '@devlop-ab/dialog';
+
+const result = await dialog.prompt('Enter a natural number between 50 and 99', '', {
+    title: 'Natural numbers',
+    input: {
+        type: 'number',
+        required: true,
+        min: 50,
+        max: 99,
+        step: 1,
+    },
+});</code></pre>
+
+            <button type="button" id="prompt-with-number-input-natural-between-50-99">show example</button>
+            <code></code>
+        </section>
+
+        <section>
+            <h3>prompt with minimum and maximum length requirements.</h3>
+
+            <pre><code class="language-javascript">import { dialog } from '@devlop-ab/dialog';
+
+const result = await dialog.prompt('Enter a single word with a length between 4 and 9 letters.', '', {
+    title: 'A single word',
+    input: {
+        type: 'text',
+        placeholder: 'Letters only (a-z), no other characters.',
+        required: true,
+        minLength: 4,
+        maxLength: 9,
+        pattern: '[a-z]+',
+    },
+});</code></pre>
+
+            <button type="button" id="prompt-with-minimum-and-maximum-length-requirements">show example</button>
+            <code></code>
+        </section>
     </main>
 
     <script> // stop the flickering buttons on page load </script>

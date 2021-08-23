@@ -18,11 +18,11 @@ var template = "\n    <div data-dialog-backdrop tabindex=\"-1\" hidden>\n       
 ;
 ;
 var makeDialog = function (type, message, options) {
-    var _a;
+    var _a, _b, _c;
     var dialogHTML = template;
     var title = (_a = options.title) !== null && _a !== void 0 ? _a : null;
-    var cancelText = 'Cancel';
-    var okText = 'Ok';
+    var cancelText = (_b = options.cancelText) !== null && _b !== void 0 ? _b : 'Cancel';
+    var okText = (_c = options.okText) !== null && _c !== void 0 ? _c : 'Ok';
     var uniqueId = String(Date.now());
     var titleId = "dialog-" + uniqueId + "-title";
     var descriptionId = "dialog-" + uniqueId + "-description";
@@ -393,58 +393,114 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var _a, _b;
 
-(_a = document.querySelector('#alert-with-title')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', (event) => __awaiter(void 0, void 0, void 0, function* () {
-    yield _devlop_ab_dialog__WEBPACK_IMPORTED_MODULE_0__.dialog.alert('Your changes have been saved.', {
-        title: 'Saved',
-    });
-}));
-(_b = document.querySelector('#alert-with-custom-button-text')) === null || _b === void 0 ? void 0 : _b.addEventListener('click', (event) => __awaiter(void 0, void 0, void 0, function* () {
-    yield _devlop_ab_dialog__WEBPACK_IMPORTED_MODULE_0__.dialog.alert('Your changes have been saved.', {
-        title: 'Saved',
-        okText: 'Alright!',
-    });
-}));
-// dialogConfirmTrigger.addEventListener('click', async (event : MouseEvent) : Promise<void> => {
-//     event.preventDefault();
-//     console.log('before confirm');
-//     const result = await dialog.confirm('Do you want to delete the file?', {
-//         title: 'Delete',
-//         focus: 'cancel',
-//     });
-//     console.log('after confirm');
-//     console.log(result);
-//     dialogConfirmTrigger.focus();
-// });
-// dialogPromptTrigger.addEventListener('click', async (event : MouseEvent) : Promise<void> => {
-//     event.preventDefault();
-//     console.log('before prompt');
-//     const answer = await dialog.prompt('What is your name?', null, {
-//         title: 'Your name',
-//         input: {
-//             // type: 'date',
-//             title: 'Remember your middle name.',
-//             // required: true,
-//             placeholder: 'Your full name',
-//             // minLength: 0,
-//             // maxLength: 12,
-//             // min: 0,
-//             // max: 20,
-//             // step: 1,
-//             // multiple: true,
-//             // list: 'ice-cream-flavors',
-//             // pattern: 'abc123',
-//             // inputMode: 'email',
-//             // spellcheck: true,
-//             // required: true,
-//             // spellcheck: true,
-//         },
-//     });
-//     console.log('after prompt');
-//     console.log(answer);
-//     dialogPromptTrigger.focus();
-// });
+const alertExamples = {
+    '#alert-with-title': ['Your changes have been saved.', {
+            title: 'Saved',
+        }],
+    '#alert-with-custom-button-text': ['Your changes have been saved.', {
+            title: 'Saved',
+            okText: 'Alright!',
+        }],
+};
+const confirmExamples = {
+    '#confirm-with-custom-buttons': [`Delete the file "passwords.txt"?`, {
+            title: 'Delete',
+            okText: 'Yes',
+            cancelText: 'No',
+        }],
+    '#confirm-with-prefocused-cancel-button': [`Delete the file "passwords.txt"?`, {
+            title: 'Delete',
+            focus: 'cancel',
+        }],
+};
+const promptExamples = {
+    '#prompt-with-default-value': ['Glory?', 'Hammer!'],
+    '#prompt-with-placeholder': ['Enter your name', '', {
+            title: 'Your name',
+            input: {
+                placeholder: 'Your full name please',
+            },
+        }],
+    '#prompt-with-required-input': ['Enter your name', '', {
+            title: 'Your name',
+            input: {
+                required: true,
+            },
+        }],
+    '#prompt-with-custom-buttons': ['Please give us your name', '', {
+            title: 'Your name',
+            okText: 'Sure',
+            cancelText: 'No, it\'s a secret',
+        }],
+    '#prompt-with-email-input': ['Enter your email', '', {
+            title: 'Your Email',
+            input: {
+                type: 'email',
+                required: true,
+            },
+        }],
+    '#prompt-with-date-input': ['Enter your birthday', '', {
+            title: 'Your Birthday',
+            input: {
+                type: 'date',
+            },
+        }],
+    '#prompt-with-number-input-natural-between-50-99': ['Enter a natural number between 50 and 99', '', {
+            title: 'Natural numbers',
+            input: {
+                type: 'number',
+                required: true,
+                min: 50,
+                max: 99,
+                step: 1,
+            },
+        }],
+    '#prompt-with-minimum-and-maximum-length-requirements': ['Enter a single word with a length between 4 and 9 letters.', '', {
+            title: 'A single word',
+            input: {
+                type: 'text',
+                placeholder: 'Letters only (a-z), no other characters.',
+                required: true,
+                minLength: 4,
+                maxLength: 9,
+                pattern: '[a-z]+',
+            },
+        }],
+};
+Object.keys(alertExamples).forEach((alertExampleId) => {
+    var _a;
+    (_a = document.querySelector(alertExampleId)) === null || _a === void 0 ? void 0 : _a.addEventListener('click', (event) => __awaiter(void 0, void 0, void 0, function* () {
+        // @ts-ignore
+        yield _devlop_ab_dialog__WEBPACK_IMPORTED_MODULE_0__.dialog.alert.apply(null, alertExamples[alertExampleId]);
+    }));
+});
+Object.keys(confirmExamples).forEach((confirmExampleId) => {
+    var _a;
+    (_a = document.querySelector(confirmExampleId)) === null || _a === void 0 ? void 0 : _a.addEventListener('click', (event) => __awaiter(void 0, void 0, void 0, function* () {
+        // @ts-ignore
+        const result = yield _devlop_ab_dialog__WEBPACK_IMPORTED_MODULE_0__.dialog.confirm.apply(null, confirmExamples[confirmExampleId]);
+        const output = document.querySelector('#' + event.target.id + ' + code');
+        if (output !== null) {
+            output.innerText = result === true
+                ? 'true'
+                : 'false';
+        }
+    }));
+});
+Object.keys(promptExamples).forEach((promptExampleId) => {
+    var _a;
+    (_a = document.querySelector(promptExampleId)) === null || _a === void 0 ? void 0 : _a.addEventListener('click', (event) => __awaiter(void 0, void 0, void 0, function* () {
+        // @ts-ignore
+        const result = yield _devlop_ab_dialog__WEBPACK_IMPORTED_MODULE_0__.dialog.prompt.apply(null, promptExamples[promptExampleId]);
+        const output = document.querySelector('#' + event.target.id + ' + code');
+        if (output !== null) {
+            output.innerText = result !== null
+                ? `"${result}"`
+                : 'null';
+        }
+    }));
+});
 
 })();
 
