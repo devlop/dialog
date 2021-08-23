@@ -3,6 +3,10 @@
     <a href="https://github.com/devlop/komponent/blob/main/LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-green" alt="License"></a>
 </p>
 
+<div style="text-align: center;">
+    <img src="/assets/example.png" alt="Example of a confirm dialog">
+</div>
+
 # dialog
 
 Lightweight and accessible drop-in replacement for the built-in browser dialog methods 
