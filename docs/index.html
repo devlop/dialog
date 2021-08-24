@@ -11,7 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.2.0/styles/default.min.css">
-    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.2.0/highlight.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/@highlightjs/cdn-assets@11.2.0/highlight.min.js"></script>
+    <script type="text/javascript">hljs.highlightAll();</script>
 
     <link rel="stylesheet" type="text/css" href="./assets/docs.css?v=XopBFjxQvu">
     <script type="text/javascript" src="./assets/docs.js?v=XopBFjxQvu" async defer></script>
@@ -22,7 +23,7 @@
     <a id="skip-to-content" href="#content">Skip to the content.</a>
 
     <header class="page-header" role="banner">
-        <h1 class="project-name">dialog</h1>
+        <h1 class="project-name">dialog docs</h1>
         <h2 class="project-tagline">Drop-in replacement for the native dialog methods (alert, confirm, prompt).</h2>
 
         <a href="https://github.com/devlop/dialog" class="btn">
@@ -78,22 +79,40 @@ const answer = await dialog.prompt('What is your name?', 'Hootsman', {
         <section>
             <h3>Using CSS variables</h3>
 
-            <p>The easiest way to change the design of the dialog is to use any of the css variables available.</p>
+            <p>
+                The easiest way to change the design of the dialog is to use any of the css variables available,
+                the color schema is HSL based and can easily be changed by modifying the base variables, all
+                other colors will be calculated from these base variables.
+            </p>
 
-            <pre><code class="language-css color-highlight">[data-dialog] {
-    --ok-button-color: blue;
-    --ok-button-border: yellow;
-    --ok-button-background-color: yellow;
-    --ok-button-hover-border: orange;
-    --ok-button-hover-background-color: orange;
-    --ok-button-active-border: darkorange;
-    --ok-button-active-background-color: darkorange;
+            <pre><code class="language-css">[data-dialog] {
+    /* the whole theme can be changed by only changing the hue. */
+    --theme-color-hue: 120;
+
+    /* it's also possible to change the saturation and lightness. */
+    --theme-color-saturation: 80%;
+    --theme-color-lightness: 58%;
+
+    /* adjust the title look and feel. */
+    --title-color: #222;
+    --title-font-family: 'Arial';
+    --title-font-size: 24px;
+
+    /* adjust the space between the "cancel" / "ok" buttons. */
+    --button-spacing: 14px;
+
+    /* adjust the input field (prompt dialog only) */
+    --input-padding: 10px;
+    --input-font-size: 16px;
+    --input-border: 2px solid #E5E7EB;
+    --input-focus-border: 2px solid #0EA5E9;
 }</code></pre>
 
             <p>It's also possible to change the style for only a single dialog method.</p>
 
             <pre><code class="language-css">[data-dialog="confirm"] {
-    // changes
+    /* applies only to confirm dialogs */
+    --theme-color-hue: 313;
 }</code></pre>
 
             <h3>Available CSS variables</h3>
@@ -104,49 +123,64 @@ const answer = await dialog.prompt('What is your name?', 'Hootsman', {
                 <details>
                     <summary>See all available css variables</summary>
 
-                    <pre><code class="language-css">[data-dialog-backdrop] {
-    --backdrop-background-color
-    --backdrop-z-index
-}</code></pre>
-
                     <pre><code class="language-css">[data-dialog] {
-    --dialog-border-radius
-    --dialog-background-color
+    --theme-color-hue
+    --theme-color-saturation
+    --theme-color-lightness
+
+    --theme-color-h: /* shorthand alias of --theme-color-hue */
+    --theme-color-s: /* shorthand alias of --theme-color-saturation */
+    --theme-color-l: /* shorthand alias of --theme-color-lightness */
+
+    --theme-color: /* use the theme-color-* variables instead, this only affects some parts of the UI */
+
+    --dialog-border-top-width:
+    --dialog-border-top-style
+    --dialog-border-top-color
     --dialog-border-top
+
     --dialog-padding
     --dialog-font-family
     --dialog-font-size
 
-    --header-border-bottom
-    --header-font-family
-    --header-font-size
-    --header-color
+    --title-color:
+    --title-font-family
+    --title-font-size
 
-    --footer-border-top
-    --footer-gap
-
-    --cancel-button-color
-    --cancel-button-border
-    --cancel-button-background-color
-    --cancel-button-hover-background-color
-    --cancel-button-active-background-color
-
-    --ok-button-color
-    --ok-button-border
-    --ok-button-background-color
-    --ok-button-hover-border
-    --ok-button-hover-background-color
-    --ok-button-active-border
-    --ok-button-active-background-color
-
-    --focus-visible-outline
-    --focus-visible-outline-offset
-    --button-focus-glow
+    --button-spacing
 
     --input-padding
     --input-font-size
     --input-border
     --input-focus-border
+
+    --focus-visible-outline
+    --focus-visible-outline-offset
+
+    --focus-box-shadow
+
+    --ok-button-color
+    --ok-button-border-width
+    --ok-button-border-style
+    --ok-button-background-color: /* updated by theme-color-* */
+    --ok-button-hover-background-color: /* updated by theme-color-* */
+    --ok-button-active-background-color: /* updated by theme-color-* */
+    --ok-button-border: /* updated by theme-color-* and ok-button-border-* */
+    --ok-button-hover-border: /* updated by theme-color-* and ok-button-border-* */
+    --ok-button-active-border: /* updated by theme-color-* and ok-button-border-* */
+
+    --cancel-button-color
+    --cancel-button-border
+    --cancel-button-background-color
+    --cancel-button-hover-background-color: /* updated by theme-color-* */
+    --cancel-button-active-background-color: /* updated by theme-color-* */
+}</code></pre>
+
+                    <p>The backdrop also exposes a few variables.</p>
+
+                    <pre><code class="language-css">[data-dialog-backdrop] {
+    --backdrop-background-color
+    --backdrop-z-index
 }</code></pre>
                 </details>
             </section>

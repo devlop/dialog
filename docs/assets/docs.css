@@ -1,13 +1,14 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap);
 /**
  * The button-focus mixin have support for the WICG focus-visible polyfill.
- *
- * We need to duplicate style selectors to get proper support.
- * The basic idea is the same for both implementations:
- *
- *
- *
  * https://github.com/WICG/focus-visible
+ *
+ * We need to duplicate style selectors to get proper support
+ * for both .focus-visible and :focus-visible.
+ *
+ * If the ".focus-visible" polyfill is used we only use that and match on :focus.
+ * If the ".focus-visible" polyfill is not used we attempt to match on :focus-visible.
+ * And lastly we define a normal :focus for the browsers where :focus-visible is not supported.
  */
 [data-dialog-backdrop] {
   --backdrop-background-color: rgba(0, 0, 0, 0.5);
@@ -25,37 +26,69 @@
 }
 
 [data-dialog] {
-  --dialog-border-radius: 4px;
-  --dialog-background-color: #fff;
-  --dialog-border-top: 5px solid #0EA5E9;
+  --theme-color-hue: 198.6301369863deg;
+  --theme-color-saturation: 88.6639676113%;
+  --theme-color-lightness: 48.431372549%;
+  --theme-color-h: var(--theme-color-hue);
+  --theme-color-s: var(--theme-color-saturation);
+  --theme-color-l: var(--theme-color-lightness);
+  --theme-color: hsl(var(--theme-color-h), var(--theme-color-s), var(--theme-color-l));
+  --dialog-border-top-width: 5px;
+  --dialog-border-top-style: solid;
+  --dialog-border-top-color: var(--theme-color);
+  --dialog-border-top: var(--dialog-border-top-width) var(--dialog-border-top-style) var(--dialog-border-top-color);
   --dialog-padding: 16px;
   --dialog-font-family: Arial;
   --dialog-font-size: 16px;
-  --header-border-bottom: 1px solid #eae9e9;
-  --header-font-family: Arial;
-  --header-font-size: 24px;
-  --header-color: #222;
-  --footer-border-top: 1px solid #eae9e9;
-  --footer-gap: 14px;
-  --cancel-button-color: #0EA5E9;
-  --cancel-button-border: 2px solid #0EA5E9;
-  --cancel-button-background-color: #fff;
-  --cancel-button-hover-background-color: #F0F9FF;
-  --cancel-button-active-background-color: #ebf7ff;
-  --ok-button-color: #fff;
-  --ok-button-border: 2px solid #0EA5E9;
-  --ok-button-background-color: #0EA5E9;
-  --ok-button-hover-border: 2px solid #0d94d1;
-  --ok-button-hover-background-color: #0d94d1;
-  --ok-button-active-border: 2px solid #0c8dc7;
-  --ok-button-active-background-color: #0c8dc7;
-  --focus-visible-outline: 2px solid #0EA5E9;
-  --focus-visible-outline-offset: 4px;
-  --button-focus-glow: 0px 0px 1px 3px #7DD3FC;
+  --title-color: #222;
+  --title-font-family: var(--dialog-font-family);
+  --title-font-size: 24px;
+  --button-spacing: 14px;
   --input-padding: 10px;
   --input-font-size: 16px;
   --input-border: 2px solid #E5E7EB;
-  --input-focus-border: 2px solid #0EA5E9;
+  --input-focus-border: 2px solid var(--theme-color);
+  --focus-visible-outline: 2px solid var(--theme-color);
+  --focus-visible-outline-offset: 4px;
+  --focus-box-shadow: 0px 0px 1px 3px hsl(
+      var(--theme-color-h),
+      calc(var(--theme-color-s) * 1.06),
+      calc(var(--theme-color-l) * 1.42)
+  );
+  --ok-button-color: #fff;
+  --ok-button-border-width: 2px;
+  --ok-button-border-style: solid;
+  --ok-button-background-color: var(--theme-color);
+  --ok-button-hover-background-color: hsl(
+      var(--theme-color-h),
+      var(--theme-color-s),
+      calc(var(--theme-color-l) * 0.95)
+  );
+  --ok-button-active-background-color: hsl(
+      var(--theme-color-h),
+      var(--theme-color-s),
+      calc(var(--theme-color-l) * 0.91)
+  );
+  --ok-button-border: var(--ok-button-border-width) var(--ok-button-border-style) var(--ok-button-background-color);
+  --ok-button-hover-border: var(--ok-button-border-width) var(--ok-button-border-style) var(--ok-button-hover-background-color);
+  --ok-button-active-border: var(--ok-button-border-width) var(--ok-button-border-style) var(--ok-button-active-background-color);
+  --cancel-button-color: var(--theme-color);
+  --cancel-button-border: 2px solid var(--theme-color);
+  --cancel-button-background-color: hsl(
+      var(--theme-color-h),
+      100%,
+      100%
+  );
+  --cancel-button-hover-background-color: hsl(
+      var(--theme-color-h),
+      100%,
+      98.5%
+  );
+  --cancel-button-active-background-color: hsl(
+      var(--theme-color-h),
+      100%,
+      97.5%
+  );
   position: absolute;
   top: 50%;
   right: auto;
@@ -64,8 +97,8 @@
   transform: translate(-50%, -75%);
   z-index: calc( (var(--backdrop-z-index)) / 2 );
   border-top: var(--dialog-border-top);
-  border-radius: var(--dialog-border-radius);
-  background-color: var(--dialog-background-color);
+  border-radius: 4px;
+  background-color: #fff;
   font-family: var(--dialog-font-family);
   font-size: var(--dialog-font-size);
   line-height: 1;
@@ -89,9 +122,9 @@
 }
 [data-dialog] header {
   padding: var(--dialog-padding);
-  border-bottom: var(--header-border-bottom);
-  font-family: var(--header-font-family);
-  font-size: var(--header-font-size);
+  border-bottom: 1px solid #eae9e9;
+  font-family: var(--title-font-family);
+  font-size: var(--title-font-size);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -99,7 +132,7 @@
   min-height: auto;
 }
 [data-dialog] header > span {
-  color: var(--header-color);
+  color: var(--title-color);
 }
 [data-dialog] section {
   height: auto;
@@ -131,16 +164,10 @@
     grid-template-columns: 100%;
     grid-template-rows: min-content;
     grid-auto-rows: min-content;
-    grid-gap: var(--footer-gap);
+    grid-gap: var(--button-spacing);
   }
   [data-dialog] footer button {
     width: 100%;
-  }
-  [data-dialog] footer button[data-role=cancel] {
-    order: 2;
-  }
-  [data-dialog] footer button[data-role=ok] {
-    order: 1;
   }
 }
 @media (min-width: 500px) {
@@ -151,12 +178,12 @@
   }
   [data-dialog] footer button {
     margin: 0;
-    margin-left: var(--footer-gap);
+    margin-left: var(--button-spacing);
   }
 }
 [data-dialog] footer {
   padding: var(--dialog-padding);
-  border-top: var(--footer-border-top);
+  border-top: 1px solid #eae9e9;
   height: auto;
   min-height: auto;
 }
@@ -175,7 +202,7 @@
   outline: none;
 }
 [data-dialog] footer button:focus:not(:active) {
-  box-shadow: var(--button-focus-glow);
+  box-shadow: var(--focus-box-shadow);
 }
 [data-dialog] footer button:not(.focus-visible):focus-visible {
   outline: var(--focus-visible-outline);
@@ -183,7 +210,7 @@
   box-shadow: none;
 }
 [data-dialog] footer button:not(.focus-visible):focus:not(:focus-visible):not(:active) {
-  box-shadow: var(--button-focus-glow);
+  box-shadow: var(--focus-box-shadow);
 }
 [data-dialog] footer button.focus-visible:focus {
   outline: var(--focus-visible-outline);
@@ -191,7 +218,7 @@
   box-shadow: none;
 }
 [data-dialog] footer button.focus-visible:focus:not(:focus-visible):not(:active) {
-  box-shadow: var(--button-focus-glow);
+  box-shadow: var(--focus-box-shadow);
 }
 [data-dialog] footer button[data-role=cancel] {
   border: var(--cancel-button-border);
