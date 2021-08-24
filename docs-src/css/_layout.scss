@@ -26,6 +26,31 @@ header {
     }
 }
 
+details {
+    summary {
+        $color: #3B82F6;
+
+        color: $color;
+        text-decoration: underline;
+        cursor: pointer;
+
+        &:hover {
+            color: color.adjust($color, $lightness: -15%);
+        }
+
+        &:active {
+            color: color.adjust($color, $lightness: -20%);
+            text-decoration: none;
+        }
+    }
+
+    &[open] {
+        summary {
+            margin-bottom: 20px;
+        }
+    }
+}
+
 #content {
     margin-bottom: 100px;
 
@@ -42,6 +67,10 @@ header {
             content: "#";
             margin-right: 5px;
         }
+    }
+
+    code.p {
+        padding: 15px;
     }
 
     > section {

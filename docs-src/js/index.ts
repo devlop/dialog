@@ -113,3 +113,24 @@ Object.keys(promptExamples).forEach((promptExampleId : string) : void => {
         }
     });
 });
+
+// @ts-ignore
+hljs.highlightAll();
+
+window.setTimeout(() : void => {
+    Array.from(document.querySelectorAll('code.color-highlight') as NodeListOf<HTMLElement>).forEach((element : HTMLElement) : void => {
+        const colors : Array<string> = [
+            'blue',
+            'yellow',
+            'orange',
+            'darkorange',
+        ];
+
+        colors.forEach((color : string) : void => {
+            const pattern = new RegExp(`(?<=: )${color}`, 'g');
+            const replacement = `<span style="border-bottom: 2px solid ${color};">${color}</span>`;
+
+            element.innerHTML = element.innerHTML.replace(pattern, replacement);
+        });
+    });
+}, 200);

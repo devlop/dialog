@@ -1050,6 +1050,22 @@ header .btn:focus-visible {
   outline-offset: 4px;
 }
 
+details summary {
+  color: #3B82F6;
+  text-decoration: underline;
+  cursor: pointer;
+}
+details summary:hover {
+  color: #0a59da;
+}
+details summary:active {
+  color: #094fc2;
+  text-decoration: none;
+}
+details[open] summary {
+  margin-bottom: 20px;
+}
+
 #content {
   margin-bottom: 100px;
 }
@@ -1062,6 +1078,9 @@ header .btn:focus-visible {
 #content h3::before {
   content: "#";
   margin-right: 5px;
+}
+#content code.p {
+  padding: 15px;
 }
 #content > section {
   margin-bottom: 40px;

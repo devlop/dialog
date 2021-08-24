@@ -12,7 +12,6 @@
 
     <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@11.2.0/styles/default.min.css">
     <script src="https://unpkg.com/@highlightjs/cdn-assets@11.2.0/highlight.min.js"></script>
-    <script>hljs.highlightAll();</script>
 
     <link rel="stylesheet" type="text/css" href="./assets/docs.css">
     <script type="text/javascript" src="./assets/docs.js" async defer></script>
@@ -33,6 +32,135 @@
     </header>
 
     <main id="content" class="main-content" role="main">
+        <h2>Installation</h2>
+
+        <section>
+            <h3>Using npm</h3>
+
+            <code class="p">npm install @devlop-ab/dialog</code>
+        </section>
+
+        <h2>Usage</h2>
+
+        <section>
+            <h3>Javascript</h3>
+
+            <p>import <code>dialog</code> to get access to the methods <code>alert</code>, <code>confirm</code> and <code>prompt</code>.</p>
+
+            <pre><code class="language-javascript">import { dialog } from '@devlop-ab/dialog';
+
+// alert
+await dialog.alert('Your message', {
+    title: 'Optional title',
+});
+
+// confirm
+const result = await dialog.confirm('Delete everything?', {
+    title: 'Optional title',
+});
+
+// prompt
+const answer = await dialog.prompt('What is your name?', 'default answer', {
+    title: 'Optional title',
+});</code></pre>
+
+            <h3>CSS</h3>
+
+            <p>Import the theme you want to use in your sass</p>
+
+            <pre><code class="language-css">@import '@devlop-ab/dialog/dist/css/sky.css';</code></pre>
+
+            <p>If you are not using sass, copy the .css file to your public path.</p>
+        </section>
+
+        <h2>Styling</h2>
+
+        <section>
+            <h3>Using CSS variables</h3>
+
+            <p>The easiest way to change the design of the dialog is to use any of the css variables available.</p>
+
+            <pre><code class="language-css color-highlight">[data-dialog] {
+    --ok-button-color: blue;
+    --ok-button-border: yellow;
+    --ok-button-background-color: yellow;
+    --ok-button-hover-border: orange;
+    --ok-button-hover-background-color: orange;
+    --ok-button-active-border: darkorange;
+    --ok-button-active-background-color: darkorange;
+}</code></pre>
+
+            <p>It's also possible to change the style for only a single dialog method.</p>
+
+            <pre><code class="language-css">[data-dialog="confirm"] {
+    // changes
+}</code></pre>
+
+            <h3>Available CSS variables</h3>
+
+            <section>
+                <p>All built in themes exposes the same set of variables.</p>
+
+                <details>
+                    <summary>See all available css variables</summary>
+
+                    <pre><code class="language-css">[data-dialog-backdrop] {
+    --backdrop-background-color
+    --backdrop-z-index
+}</code></pre>
+
+                    <pre><code class="language-css">[data-dialog] {
+            --dialog-border-radius
+            --dialog-background-color
+            --dialog-border-top
+            --dialog-padding
+            --dialog-font-family
+            --dialog-font-size
+
+            --header-border-bottom
+            --header-font-family
+            --header-font-size
+            --header-color
+
+            --footer-border-top
+            --footer-gap
+
+            --cancel-button-color
+            --cancel-button-border
+            --cancel-button-background-color
+            --cancel-button-hover-background-color
+            --cancel-button-active-background-color
+
+            --ok-button-color
+            --ok-button-border
+            --ok-button-background-color
+            --ok-button-hover-border
+            --ok-button-hover-background-color
+            --ok-button-active-border
+            --ok-button-active-background-color
+
+            --focus-visible-outline
+            --focus-visible-outline-offset
+            --button-focus-glow
+
+            --input-padding
+            --input-font-size
+            --input-border
+            --input-focus-border
+}</code></pre>
+                </details>
+            </section>
+
+        </section>
+
+        <h2>Available themes</h2>
+
+        <section>
+           <h3>sky</h3>
+
+           <p>sky is the only theme available at launch.</p>
+        </section>
+
         <h2>Examples</h2>
 
         <!-- alert examples -->

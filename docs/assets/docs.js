@@ -501,6 +501,23 @@ Object.keys(promptExamples).forEach((promptExampleId) => {
         }
     }));
 });
+// @ts-ignore
+hljs.highlightAll();
+window.setTimeout(() => {
+    Array.from(document.querySelectorAll('code.color-highlight')).forEach((element) => {
+        const colors = [
+            'blue',
+            'yellow',
+            'orange',
+            'darkorange',
+        ];
+        colors.forEach((color) => {
+            const pattern = new RegExp(`(?<=: )${color}`, 'g');
+            const replacement = `<span style="border-bottom: 2px solid ${color};">${color}</span>`;
+            element.innerHTML = element.innerHTML.replace(pattern, replacement);
+        });
+    });
+}, 200);
 
 })();
 
