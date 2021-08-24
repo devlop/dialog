@@ -60,7 +60,7 @@ const result = await dialog.confirm('Delete everything?', {
 });
 
 // prompt
-const answer = await dialog.prompt('What is your name?', 'default answer', {
+const answer = await dialog.prompt('What is your name?', 'Hootsman', {
     title: 'Optional title',
 });</code></pre>
 
@@ -246,7 +246,7 @@ const result = await dialog.prompt('Glory?', 'Hammer!');</code></pre>
 
             <pre><code class="language-javascript">import { dialog } from '@devlop-ab/dialog';
 
-const result = await dialog.prompt('Enter your name', '', {
+const result = await dialog.prompt('Enter your name', 'Angus McFife', {
     title: 'Your name',
     input: {
         placeholder: 'Your full name please',
@@ -268,7 +268,7 @@ const result = await dialog.prompt('Enter your name', '', {
 
             <pre><code class="language-javascript">import { dialog } from '@devlop-ab/dialog';
 
-const result = await dialog.prompt('Enter your name', '', {
+const result = await dialog.prompt('Enter your name', 'Hootsman', {
     title: 'Your name',
     input: {
         required: true,

@@ -1,60 +1,58 @@
 @use "sass:color";
+@use "sass:map";
 @use "sass:math";
 
 /**
  * The button-focus mixin have support for the WICG focus-visible polyfill.
- *
- * We need to duplicate style selectors to get proper support.
- * The basic idea is the same for both implementations:
- *
- *
- *
  * https://github.com/WICG/focus-visible
+ *
+ * We need to duplicate style selectors to get proper support
+ * for both .focus-visible and :focus-visible.
+ *
+ * If the ".focus-visible" polyfill is used we only use that and match on :focus.
+ * If the ".focus-visible" polyfill is not used we attempt to match on :focus-visible.
+ * And lastly we define a normal :focus for the browsers where :focus-visible is not supported.
  */
-@mixin button-focus() {
+@mixin button-focus-visible-styles($selector) {
+    #{$selector} {
+        // show the outline on focus-visible.
+        outline: var(--focus-visible-outline);
+        outline-offset: var(--focus-visible-outline-offset);
+
+        // hide the fallback glow.
+        box-shadow: none;
+    }
+
+    &:focus:not(:focus-visible):not(:active) {
+        // show the glow on "normal" focus.
+        box-shadow: var(--focus-box-shadow);
+    }
+}
+
+@mixin button-focus-styles() {
     // Fallback for when neither focus-visible solution is available.
     &:focus {
         outline: none;
 
         &:not(:active) {
             // use the focus-glow instead (but not if :active).
-            box-shadow: var(--button-focus-glow);
+            box-shadow: var(--focus-box-shadow);
         }
     }
 
     // When the polyfill is not available.
     &:not(.focus-visible) {
-        &:focus-visible {
-            // show the outline when focus-visible.
-            outline: var(--focus-visible-outline);
-            outline-offset: var(--focus-visible-outline-offset);
-
-            // hide the fallback glow.
-            box-shadow: none;
-        }
-
-        &:focus:not(:focus-visible):not(:active) {
-            // show the glow on "normal" focus.
-            box-shadow: var(--button-focus-glow);
-        }
+        @include button-focus-visible-styles('&:focus-visible');
     }
 
     // When the polyfill is available.
     &.focus-visible {
-        &:focus {
-            // show the outline when focus-visible.
-            outline: var(--focus-visible-outline);
-            outline-offset: var(--focus-visible-outline-offset);
-
-            // hide the fallback glow.
-            box-shadow: none;
-        }
-
-        &:focus:not(:focus-visible):not(:active) {
-            // show the glow on "normal" focus.
-            box-shadow: var(--button-focus-glow);
-        }
+        @include button-focus-visible-styles('&:focus');
     }
+}
+
+@function percent_to_dec($percentage) {
+    @return 1 + math.div($percentage, 100%);
 }
 
 [data-dialog-backdrop] {
@@ -75,64 +73,106 @@
 }
 
 [data-dialog] {
-    --dialog-border-radius: 4px;
-    --dialog-background-color: #fff;
-    --dialog-border-top: 5px solid #0EA5E9;
+    $dialog-width: 450px;
+    $mobile-breakpoint: math.div($dialog-width, 90) * 100;
+
+    $theme-color: #0EA5E9;
+
+    // "ok" button takes lightness modifiers in relative percentage.
+    $ok-button-lightness: (
+        'hover': -5%,
+        'active': -9%,
+    );
+
+    // "cancel" button takes lightness modifiers in absolute percentage.
+    $cancel-button-lightness: (
+        'stateless': 100%,
+        'hover': 98.5%,
+        'active': 97.5%,
+    );
+
+    $input-border-color: #E5E7EB;
+
+    --theme-color-h: #{color.hue($theme-color)};
+    --theme-color-s: #{color.saturation($theme-color)};
+    --theme-color-l: #{color.lightness($theme-color)};
+
+    // combined hsl color, not recommended to override
+    --theme-color: hsl(var(--theme-color-h), var(--theme-color-s), var(--theme-color-l));
+
+    --dialog-border-top-width: 5px;
+    --dialog-border-top-style: solid;
+    --dialog-border-top-color: var(--theme-color);
+    --dialog-border-top: var(--dialog-border-top-width) var(--dialog-border-top-style) var(--dialog-border-top-color);
+
     --dialog-padding: 16px;
     --dialog-font-family: Arial;
     --dialog-font-size: 16px;
 
-    --header-border-bottom: 1px solid #eae9e9;
-    --header-font-family: Arial;
-    --header-font-size: 24px;
     --header-color: #222;
+    --header-font-family: var(--dialog-font-family);
+    --header-font-size: 24px;
 
-    --footer-border-top: 1px solid #eae9e9;
-    --footer-gap: 14px;
-
-    $cancel-button-background-color: #fff;
-    $cancel-button-hover-background-color: #F0F9FF;
-    $cancel-button-active-background-color: color.adjust($cancel-button-hover-background-color, $lightness: -1%);
-
-    --cancel-button-color: #0EA5E9;
-    --cancel-button-border: 2px solid #0EA5E9;
-    --cancel-button-background-color: #{$cancel-button-background-color};
-    --cancel-button-hover-background-color: #{$cancel-button-hover-background-color};
-    --cancel-button-active-background-color: #{$cancel-button-active-background-color};
-
-    $ok-button-background-color: #0EA5E9;
-    $ok-button-hover-background-color: color.adjust($ok-button-background-color, $lightness: -5%);
-    $ok-button-active-background-color: color.adjust($ok-button-background-color, $lightness: -7%);
-
-    --ok-button-color: #fff;
-    --ok-button-border: 2px solid #{$ok-button-background-color};
-    --ok-button-background-color: #{$ok-button-background-color};
-    --ok-button-hover-border: 2px solid #{$ok-button-hover-background-color};
-    --ok-button-hover-background-color: #{$ok-button-hover-background-color};
-    --ok-button-active-border: 2px solid #{$ok-button-active-background-color};
-    --ok-button-active-background-color: #{$ok-button-active-background-color};
-
-    --focus-visible-outline: 2px solid #0EA5E9;
-    --focus-visible-outline-offset: 4px;
-    --button-focus-glow: 0px 0px 1px 3px #7DD3FC;
+    --footer-spacing: 14px;
 
     --input-padding: 10px;
     --input-font-size: 16px;
-    --input-border: 2px solid #E5E7EB;
-    --input-focus-border: 2px solid #0EA5E9;
+    --input-border: 2px solid #{$input-border-color};
+    --input-focus-border: 2px solid var(--theme-color);
+
+    --focus-visible-outline: 2px solid var(--theme-color);
+    --focus-visible-outline-offset: 4px;
+
+    --focus-box-shadow: 0px 0px 1px 3px hsl(
+        var(--theme-color-h),
+        calc(var(--theme-color-s) * 1.06),
+        calc(var(--theme-color-l) * 1.42)
+    );
+
+    --ok-button-color: #fff;
+    --ok-button-background-color: var(--theme-color);
+    --ok-button-hover-background-color: hsl(
+        var(--theme-color-h),
+        var(--theme-color-s),
+        calc(var(--theme-color-l) * #{percent_to_dec(map.get($ok-button-lightness, 'hover'))})
+    );
+    --ok-button-active-background-color: hsl(
+        var(--theme-color-h),
+        var(--theme-color-s),
+        calc(var(--theme-color-l) * #{percent_to_dec(map.get($ok-button-lightness, 'active'))})
+    );
+    --ok-button-border: 2px solid var(--ok-button-background-color);
+    --ok-button-hover-border: 2px solid var(--ok-button-hover-background-color);
+    --ok-button-active-border: 2px solid var(--ok-button-active-background-color);
+
+    --cancel-button-color: var(--theme-color);
+    --cancel-button-border: 2px solid var(--theme-color);
+    --cancel-button-background-color: hsl(
+        var(--theme-color-h),
+        100%,
+        #{map.get($cancel-button-lightness, 'stateless')}
+    );
+    --cancel-button-hover-background-color: hsl(
+        var(--theme-color-h),
+        100%,
+        #{map.get($cancel-button-lightness, 'hover')}
+    );
+    --cancel-button-active-background-color: hsl(
+        var(--theme-color-h),
+        100%,
+        #{map.get($cancel-button-lightness, 'active')}
+    );
 
     position: absolute;
     top: 50%;
     right: auto;
     bottom: auto;
     left: 50%;
-
     transform: translate(-50%, -75%);
-
     z-index: calc( (var(--backdrop-z-index)) / 2 );
     border-top: var(--dialog-border-top);
-    border-radius: var(--dialog-border-radius);
-    background-color: var(--dialog-background-color);
+    border-radius: 4px;
+    background-color: #fff;
     font-family: var(--dialog-font-family);
     font-size: var(--dialog-font-size);
     line-height: 1;
@@ -143,9 +183,6 @@
 
     // mobile first, non mobile width defined in breakpoint below
     width: 90%;
-
-    $dialog-width: 450px;
-    $mobile-breakpoint: math.div($dialog-width, 90) * 100;
 
     * {
         // make sure all descendants also uses border-box
@@ -163,7 +200,7 @@
 
     header {
         padding: var(--dialog-padding);
-        border-bottom: var(--header-border-bottom);
+        border-bottom: 1px solid #eae9e9;
         font-family: var(--header-font-family);
         font-size: var(--header-font-size);
         display: flex;
@@ -213,18 +250,10 @@
             grid-template-columns: 100%;
             grid-template-rows: min-content;
             grid-auto-rows: min-content;
-            grid-gap: var(--footer-gap);
+            grid-gap: var(--footer-spacing);
 
             button {
                 width: 100%;
-
-                &[data-role="cancel"] {
-                    order: 2;
-                }
-
-                &[data-role="ok"] {
-                    order: 1;
-                }
             }
         }
     }
@@ -238,14 +267,14 @@
 
             button {
                 margin: 0;
-                margin-left: var(--footer-gap); // change to flex gap when we drop support for Safari < 14.1 (or introduce js feature detection)
+                margin-left: var(--footer-spacing);
             }
         }
     }
 
     footer {
         padding: var(--dialog-padding);
-        border-top: var(--footer-border-top);
+        border-top: 1px solid #eae9e9;
         height: auto;
         min-height: auto;
 
@@ -260,7 +289,7 @@
             line-height: 1;
             user-select: none;
 
-            @include button-focus();
+            @include button-focus-styles();
 
             &[data-role="cancel"] {
                 border: var(--cancel-button-border);

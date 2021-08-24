@@ -24,13 +24,13 @@ const confirmExamples = {
 
 const promptExamples = {
     '#prompt-with-default-value': ['Glory?', 'Hammer!'],
-    '#prompt-with-placeholder': ['Enter your name', '', {
+    '#prompt-with-placeholder': ['Enter your name', 'Angus McFife', {
         title: 'Your name',
         input: {
             placeholder: 'Your full name please',
         },
     }],
-    '#prompt-with-required-input': ['Enter your name', '', {
+    '#prompt-with-required-input': ['Enter your name', 'Hootsman', {
         title: 'Your name',
         input: {
             required: true,
