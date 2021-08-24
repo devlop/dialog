@@ -287,6 +287,16 @@ const registerEventListeners = (
         cancelCallback.apply(null);
     });
 
+    backdrop?.addEventListener('keydown', (event : KeyboardEvent) : void => {
+        if (event.key !== 'Escape') {
+            return;
+        }
+
+        event.preventDefault();
+
+        cancelCallback.apply(null);
+    });
+
     // close the dialog (cancel) when the escape key is pressed
     registerDocumentEventListener('keydown', (event : KeyboardEvent) : void => {
         if (event.key !== 'Escape') {
