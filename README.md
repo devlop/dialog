@@ -80,23 +80,27 @@ The javascript does not output any styles, you must include them in your css/sas
 **Using SASS** 
 
 ```scss
-// importing using sass
+// importing the theme "sky".
 @import '@devlop-ab/dialog/dist/css/sky.css';
 ```
 
+See [https://devlop.github.io/dialog for all available themes](https://devlop.github.io/dialog).
+
 **Using vanilla CSS** 
 
-Copy the css file you want to use from the `node_modules/@devlop-ab/dialog/dist/css` directory and put it with your other assets.
+Copy the css file for the theme you want to use from `node_modules/@devlop-ab/dialog/dist/css` directory and put it with your other assets.
 
 ## Customizing the CSS
 
-Each theme exposes a plethora of css variables allowing you to change colors, fonts and padding without overriding any css.
+Each theme exposes a plethora of css variables allowing you to change colors, fonts and padding without overriding any css selectors.
 
 ```scss
 // importing using sass
 @import '@devlop-ab/dialog/dist/css/sky.css';
 
 [data-dialog] {
-    --cancel-button-color: red;
+    --theme-color-h: 310;
 }
 ```
+
+See [https://devlop.github.io/dialog for all variables](https://devlop.github.io/dialog).

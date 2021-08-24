@@ -1,6 +1,6 @@
 {
     "name": "@devlop-ab/dialog",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "Lightweight and accessible drop-in replacement for the built-in browser dialog methods (alert, confirm and prompt).",
     "keywords": [
         "accessibility",
