@@ -99,7 +99,7 @@ Each theme exposes a plethora of css variables allowing you to change colors, fo
 @import '@devlop-ab/dialog/dist/css/sky.css';
 
 [data-dialog] {
-    --theme-color-h: 310;
+    --theme-color-hue: 310;
 }
 ```
 

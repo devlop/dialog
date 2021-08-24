@@ -93,9 +93,14 @@
 
     $input-border-color: #E5E7EB;
 
-    --theme-color-h: #{color.hue($theme-color)};
-    --theme-color-s: #{color.saturation($theme-color)};
-    --theme-color-l: #{color.lightness($theme-color)};
+    // public nicer aliases for -h, -s and -l
+    --theme-color-hue: #{color.hue($theme-color)};
+    --theme-color-saturation: #{color.saturation($theme-color)};
+    --theme-color-lightness: #{color.lightness($theme-color)};
+
+    --theme-color-h: var(--theme-color-hue);
+    --theme-color-s: var(--theme-color-saturation);
+    --theme-color-l: var(--theme-color-lightness);
 
     // combined hsl color, not recommended to override
     --theme-color: hsl(var(--theme-color-h), var(--theme-color-s), var(--theme-color-l));
