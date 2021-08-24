@@ -10,7 +10,7 @@
         "prod": "NODE_ENV=production webpack"
     },
     "dependencies": {
-        "@devlop-ab/dialog": "^1.0.5",
+        "@devlop-ab/dialog": "^1.0.6",
         "copy-webpack-plugin": "^9.0.1",
         "css-loader": "^5.2.7",
         "fork-ts-checker-webpack-plugin": "^6.3.2",

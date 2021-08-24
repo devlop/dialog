@@ -95,9 +95,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: auto;
+  min-height: auto;
 }
 [data-dialog] header > span {
   color: var(--header-color);
+}
+[data-dialog] section {
+  height: auto;
+  min-height: auto;
 }
 [data-dialog] section.message {
   padding: var(--dialog-padding);
@@ -151,6 +157,8 @@
 [data-dialog] footer {
   padding: var(--dialog-padding);
   border-top: var(--footer-border-top);
+  height: auto;
+  min-height: auto;
 }
 [data-dialog] footer button {
   font-size: 16px;
