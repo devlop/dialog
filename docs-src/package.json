@@ -10,12 +10,12 @@
         "prod": "NODE_ENV=production webpack"
     },
     "dependencies": {
-        "@devlop-ab/dialog": "^1.0.1",
+        "@devlop-ab/dialog": "^1.0.5",
         "copy-webpack-plugin": "^9.0.1",
         "css-loader": "^5.2.7",
         "fork-ts-checker-webpack-plugin": "^6.3.2",
         "mini-css-extract-plugin": "^1.6.2",
-        "sass": "^1.37.5",
+        "sass": "^1.38.1",
         "sass-loader": "^10.1.1",
         "ts-loader": "^8.3.0",
         "typescript": "^4.3.5",
