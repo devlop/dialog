@@ -109,11 +109,11 @@
     --dialog-font-family: Arial;
     --dialog-font-size: 16px;
 
-    --header-color: #222;
-    --header-font-family: var(--dialog-font-family);
-    --header-font-size: 24px;
+    --title-color: #222;
+    --title-font-family: var(--dialog-font-family);
+    --title-font-size: 24px;
 
-    --footer-spacing: 14px;
+    --button-spacing: 14px;
 
     --input-padding: 10px;
     --input-font-size: 16px;
@@ -130,6 +130,8 @@
     );
 
     --ok-button-color: #fff;
+    --ok-button-border-width: 2px;
+    --ok-button-border-style: solid;
     --ok-button-background-color: var(--theme-color);
     --ok-button-hover-background-color: hsl(
         var(--theme-color-h),
@@ -141,9 +143,9 @@
         var(--theme-color-s),
         calc(var(--theme-color-l) * #{percent_to_dec(map.get($ok-button-lightness, 'active'))})
     );
-    --ok-button-border: 2px solid var(--ok-button-background-color);
-    --ok-button-hover-border: 2px solid var(--ok-button-hover-background-color);
-    --ok-button-active-border: 2px solid var(--ok-button-active-background-color);
+    --ok-button-border: var(--ok-button-border-width) var(--ok-button-border-style) var(--ok-button-background-color);
+    --ok-button-hover-border: var(--ok-button-border-width) var(--ok-button-border-style) var(--ok-button-hover-background-color);
+    --ok-button-active-border: var(--ok-button-border-width) var(--ok-button-border-style) var(--ok-button-active-background-color);
 
     --cancel-button-color: var(--theme-color);
     --cancel-button-border: 2px solid var(--theme-color);
@@ -201,8 +203,8 @@
     header {
         padding: var(--dialog-padding);
         border-bottom: 1px solid #eae9e9;
-        font-family: var(--header-font-family);
-        font-size: var(--header-font-size);
+        font-family: var(--title-font-family);
+        font-size: var(--title-font-size);
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -210,7 +212,7 @@
         min-height: auto;
 
         > span {
-            color: var(--header-color);
+            color: var(--title-color);
         }
     }
 
@@ -250,7 +252,7 @@
             grid-template-columns: 100%;
             grid-template-rows: min-content;
             grid-auto-rows: min-content;
-            grid-gap: var(--footer-spacing);
+            grid-gap: var(--button-spacing);
 
             button {
                 width: 100%;
@@ -267,7 +269,7 @@
 
             button {
                 margin: 0;
-                margin-left: var(--footer-spacing);
+                margin-left: var(--button-spacing);
             }
         }
     }
