@@ -215,10 +215,8 @@
         align-items: center;
         height: auto;
         min-height: auto;
-
-        > span {
-            color: var(--title-color);
-        }
+        color: var(--title-color);
+        background-color: #fff;
     }
 
     section {
@@ -284,6 +282,7 @@
         border-top: 1px solid #eae9e9;
         height: auto;
         min-height: auto;
+        background-color: #fff;
 
         button {
             font-size: 16px;
