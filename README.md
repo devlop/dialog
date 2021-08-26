@@ -4,7 +4,7 @@
 </p>
 
 <p align="center">
-    <img src="/assets/example.png" alt="Example of a confirm dialog" width="450">
+    <img src="/assets/animation.gif" alt="Example of a confirm dialog" width="488" height="228">
 </p>
 
 <p align="center">
